@@ -1,0 +1,39 @@
+# Relatório da Sprint 1 – Análise e Modelagem
+
+**Projeto:** Cálculo de Folha de Pagamento  
+
+**Nome:** Allan Mateus Arruda  
+**Nome:** Lara Andrade Carvalho  
+
+---
+
+## 1. Análise do Estudo de Caso e Interpretação do Domínio
+
+O domínio do sistema é o **Cálculo de Folha de Pagamento (Holerite)** no contexto da legislação trabalhista brasileira (CLT). O sistema visa automatizar o processo de apuração dos vencimentos e deduções de um colaborador para gerar o valor líquido de seu salário.  
+
+### Conceitos centrais do domínio:  
+
+- **Funcionário:** A entidade principal, caracterizada por nome, cargo e salário base.  
+- **Proventos:** Todos os valores que somam à remuneração, como o salário bruto, adicionais (periculosidade, insalubridade) e benefícios (vale alimentação).  
+- **Descontos:** Todos os valores deduzidos da remuneração, incluindo contribuições obrigatórias (INSS, IRRF) e outros descontos (vale transporte, plano de saúde).  
+- **Regras de Cálculo:** As lógicas de negócio que transformam os dados brutos (salário, dias trabalhados) em valores calculados, seguindo tabelas e alíquotas governamentais.  
+- **Salário Líquido:** O resultado final da operação: **Total de Proventos - Total de Descontos**.  
+
+---
+
+## 2. Identificação de Requisitos do Sistema
+
+- **RF1:** Calcular Salário por Hora.  
+- **RF2:** Calcular Adicional de Periculosidade.  
+- **RF3:** Calcular Adicional de Insalubridade.  
+- **RF4:** Calcular Desconto de Vale Transporte.  
+- **RF5:** Calcular Benefício de Vale Alimentação.  
+- **RF6:** Calcular Desconto de INSS (seguindo a tabela progressiva).  
+- **RF7:** Calcular depósito de FGTS (8% sobre a base de cálculo).  
+- **RF8:** Calcular Desconto de IRRF (seguindo a tabela de alíquotas e deduções).  
+- **RF9:** Calcular Salário Líquido.  
+- **RF10:** Exibir Relatório final com todos os proventos e descontos.  
+
+---
+
+
