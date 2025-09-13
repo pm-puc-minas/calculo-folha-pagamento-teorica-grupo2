@@ -1,0 +1,11 @@
+
+## Modelagem das Classes do Frontend (UI)
+
+- **App.jsx:** Componente principal que gerencia o estado da aplicação, realiza a chamada à API backend e distribui os dados para os componentes filhos.  
+- **InfoCard.jsx:** Exibe o card superior com as informações básicas do colaborador (nome, cargo, etc.).  
+- **DetailsContainer.jsx:** Organiza os cards de "Proventos" e "Descontos". Recebe listas de itens e as renderiza dinamicamente.  
+- **SummaryCard.jsx:** Exibe o card inferior de resumo, com os totais de salário bruto, descontos e salário líquido.  
+- **Actions.jsx:** Barra inferior com os botões de ação ("Gerar PDF", "Salvar", "Voltar").  
+
+**Interação esperada:**  
+Ao carregar a página, o componente `App.jsx` executa uma chamada à API (usando dados de exemplo fixos, por enquanto). Os dados recebidos são armazenados em um estado e passados via props para os componentes filhos, que se renderizam na tela para exibir o relatório completo.  
