@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="br.com.folhapagamento.service.CalculadoraFolhaTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2025-09-13T19:52:46" hostname="ALLAN" time="0.333">
+  <properties/>
+  <testcase name="testCalcularFolha_FuncionarioBasico()" classname="br.com.folhapagamento.service.CalculadoraFolhaTest" time="0.333"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

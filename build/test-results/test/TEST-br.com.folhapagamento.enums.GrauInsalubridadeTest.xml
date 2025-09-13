@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="br.com.folhapagamento.enums.GrauInsalubridadeTest" tests="5" skipped="0" failures="0" errors="0" timestamp="2025-09-13T19:52:46" hostname="ALLAN" time="0.015">
+  <properties/>
+  <testcase name="testFromString_ValorInvalido()" classname="br.com.folhapagamento.enums.GrauInsalubridadeTest" time="0.006"/>
+  <testcase name="testFromString_Alto()" classname="br.com.folhapagamento.enums.GrauInsalubridadeTest" time="0.002"/>
+  <testcase name="testFromString_Null()" classname="br.com.folhapagamento.enums.GrauInsalubridadeTest" time="0.0"/>
+  <testcase name="testFromString_Baixo()" classname="br.com.folhapagamento.enums.GrauInsalubridadeTest" time="0.001"/>
+  <testcase name="testFromString_Medio()" classname="br.com.folhapagamento.enums.GrauInsalubridadeTest" time="0.003"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>
