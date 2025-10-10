@@ -4,7 +4,9 @@
 Sistema completo para cálculo de folha de pagamento de funcionários, desenvolvido em Java Spring Boot .
 
 ## 🎯 Objetivo
-Este projeto foi desenvolvido como parte do Sprint 1 - Análise e Modelagem, focando em criar uma base sólida para um sistema de folha de pagamento empresarial. 
+Este projeto foi desenvolvido em duas sprints:
+- **Sprint 1**: Análise e Modelagem - Criação da base sólida do sistema
+- **Sprint 2**: Herança, Interfaces, Polimorfismo e Testes Unitários - Aplicação de conceitos OOP 
 
 ## ✨ Funcionalidades Principais
 
@@ -25,6 +27,32 @@ Este projeto foi desenvolvido como parte do Sprint 1 - Análise e Modelagem, foc
 - **INSS**: Tabela progressiva (7,5% a 14%)
 - **IRRF**: Tabela progressiva (0% a 27,5%)
 - **FGTS**: 8% da base de cálculo
+
+## 🏗️ Sprint 2 - Conceitos OOP 
+
+### 🔄 **Herança**
+- **Classes Abstratas**: `CalculadoraBase` e `FuncionarioBase`
+- **Template Method Pattern**: Estrutura comum com implementação específica
+- **Hierarquia de Funcionários**: `FuncionarioCLT` e `FuncionarioPJ`
+- **Reutilização de Código**: Funcionalidades comuns centralizadas
+
+### 🎭 **Polimorfismo**
+- **Processamento Específico**: Cada tipo de funcionário tem suas próprias regras
+- **Métodos Sobrescritos**: Comportamento específico por tipo
+- **Processamento em Lote**: Lista de funcionários processada polimorficamente
+- **Identificação Dinâmica**: Uso de `instanceof` para comportamento específico
+
+### 🔌 **Interfaces e Contratos**
+- **Contratos Bem Definidos**: Interfaces claras para todas as calculadoras
+- **Implementações Específicas**: Cada interface implementada adequadamente
+- **Injeção de Dependência**: Spring Framework integrado
+- **Baixo Acoplamento**: Dependências injetadas, não instanciadas
+
+### 🧪 **Testes Unitários Abrangentes**
+- **94 Testes Implementados**: Cobertura abrangente do sistema
+- **Testes de Herança**: Classes abstratas testadas
+- **Testes de Polimorfismo**: Comportamento específico por tipo
+- **Testes de Integração**: Cenários complexos cobertos
 
 ## 🚀 Como Executar
 
@@ -204,13 +232,19 @@ Invoke-RestMethod -Uri "http://localhost:8080/api/calcular" -Method POST -Conten
 │   │   │   │   ├── 📋 CalculadoraDescontos.java     # Interface para descontos
 │   │   │   │   └── 📋 FolhaPagamentoService.java    # Interface principal do serviço
 │   │   │   ├── 📁 service/                          # Implementações concretas
+│   │   │   │   ├── 📁 abstracts/                    # Classes abstratas (Sprint 2)
+│   │   │   │   │   └── 🔧 CalculadoraBase.java      # Classe abstrata base
 │   │   │   │   ├── 🔧 CalculadoraSalarioImpl.java   # Implementação de salário
 │   │   │   │   ├── 🔧 CalculadoraAdicionaisImpl.java # Implementação de adicionais
 │   │   │   │   ├── 🔧 CalculadoraBeneficiosImpl.java # Implementação de benefícios
 │   │   │   │   ├── 🔧 CalculadoraDescontosImpl.java  # Implementação de descontos
 │   │   │   │   └── 🔧 CalculadoraFolha.java         # Orquestrador principal
 │   │   │   ├── 📁 model/
-│   │   │   │   ├── 👤 Funcionario.java             # Modelo do funcionário
+│   │   │   │   ├── 📁 abstracts/                    # Classes abstratas (Sprint 2)
+│   │   │   │   │   └── 👤 FuncionarioBase.java      # Classe abstrata base
+│   │   │   │   ├── 👤 Funcionario.java             # Modelo do funcionário (Sprint 1)
+│   │   │   │   ├── 👤 FuncionarioCLT.java          # Funcionário CLT (Sprint 2)
+│   │   │   │   ├── 👤 FuncionarioPJ.java           # Funcionário PJ (Sprint 2)
 │   │   │   │   └── 📊 FolhaPagamento.java          # Modelo da folha
 │   │   │   ├── 📁 enums/
 │   │   │   │   └── 🔢 GrauInsalubridade.java       # Enum para graus de insalubridade
@@ -221,8 +255,16 @@ Invoke-RestMethod -Uri "http://localhost:8080/api/calcular" -Method POST -Conten
 │   └── 📁 test/java/br/com/folhapagamento/
 │       ├── 🧪 FolhaPagamentoApplicationTests.java  # Teste da aplicação
 │       ├── 📁 service/
+│       │   ├── 📁 abstracts/                       # Testes de classes abstratas (Sprint 2)
+│       │   │   └── 🧪 CalculadoraBaseTest.java     # Teste da classe abstrata
 │       │   ├── 🧪 CalculadoraFolhaTest.java        # Teste do orquestrador
-│       │   └── 🧪 CalculadoraAdicionaisImplTest.java # Teste de adicionais
+│       │   ├── 🧪 CalculadoraFolhaPolimorfismoTest.java # Teste de polimorfismo (Sprint 2)
+│       │   ├── 🧪 CalculadoraAdicionaisImplTest.java # Teste de adicionais
+│       │   ├── 🧪 CalculadoraDescontosImplTest.java # Teste de descontos (Sprint 2)
+│       │   └── 🧪 CalculadoraBeneficiosImplTest.java # Teste de benefícios (Sprint 2)
+│       ├── 📁 model/
+│       │   ├── 🧪 FuncionarioCLTTest.java          # Teste do funcionário CLT (Sprint 2)
+│       │   └── 🧪 FuncionarioPJTest.java           # Teste do funcionário PJ (Sprint 2)
 │       └── 📁 enums/
 │           └── 🧪 GrauInsalubridadeTest.java       # Teste do enum
 └── 📁 build/                            # Arquivos compilados (gerado automaticamente)
@@ -391,6 +433,12 @@ A API está completamente documentada com Swagger/OpenAPI 3. Acesse:
 ### Cobertura de Testes
 - ✅ **CalculadoraFolha** - Testes unitários com mocks
 - ✅ **CalculadoraAdicionaisImpl** - Testes específicos de adicionais
+- ✅ **CalculadoraDescontosImpl** - Testes de todas as faixas de INSS/IRRF (Sprint 2)
+- ✅ **CalculadoraBeneficiosImpl** - Testes de benefícios e descontos (Sprint 2)
+- ✅ **CalculadoraBase** - Testes da classe abstrata (Sprint 2)
+- ✅ **FuncionarioCLT** - Testes de herança e polimorfismo (Sprint 2)
+- ✅ **FuncionarioPJ** - Testes de herança e polimorfismo (Sprint 2)
+- ✅ **Polimorfismo** - Testes de processamento específico por tipo (Sprint 2)
 - ✅ **GrauInsalubridade** - Testes do enum
 - ✅ **FolhaPagamentoApplication** - Teste de contexto Spring
 - 📊 **Relatórios** - Gerados em `build/reports/tests/`
