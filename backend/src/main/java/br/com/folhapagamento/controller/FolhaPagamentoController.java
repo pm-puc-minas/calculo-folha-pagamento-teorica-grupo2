@@ -6,7 +6,9 @@ import br.com.folhapagamento.interfaces.FolhaPagamentoService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -20,8 +22,10 @@ public class FolhaPagamentoController {
     @PostMapping("/calcular")
     @Operation(summary = "Calcular folha de pagamento", description = "Calcula a folha de pagamento completa de um funcionário")
     @ApiResponse(responseCode = "200", description = "Folha calculada com sucesso")
-    public FolhaPagamento calcularFolha(@RequestBody Funcionario funcionario) {
-        return folhaPagamentoService.calcularFolha(funcionario);
+    @ApiResponse(responseCode = "400", description = "Dados inválidos")
+    public ResponseEntity<FolhaPagamento> calcularFolha(@Valid @RequestBody Funcionario funcionario) {
+        FolhaPagamento folha = folhaPagamentoService.calcularFolha(funcionario);
+        return ResponseEntity.ok(folha);
     }
     
     @GetMapping("/teste")

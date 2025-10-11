@@ -9,8 +9,17 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Checkbox } from "@/components/ui/checkbox"
 import { Badge } from "@/components/ui/badge"
 import { Calculator, Loader2, Wifi, WifiOff } from "lucide-react"
-import { calcularFolhaPagamento, testarAPI, type FolhaPagamento } from "@/lib/api"
+import { calcularFolhaPagamento, testarAPI, APIError, type FolhaPagamento } from "@/lib/api"
 import { toast } from "sonner"
+
+interface FieldErrors {
+  nome?: string;
+  cargo?: string;
+  salary?: string;
+  dependents?: string;
+  valeTransporte?: string;
+  valeAlimentacao?: string;
+}
 
 export function PayrollCalculator() {
   const [nome, setNome] = useState("")
@@ -25,6 +34,7 @@ export function PayrollCalculator() {
   const [result, setResult] = useState<FolhaPagamento | null>(null)
   const [loading, setLoading] = useState(false)
   const [apiStatus, setApiStatus] = useState<"checking" | "online" | "offline">("checking")
+  const [fieldErrors, setFieldErrors] = useState<FieldErrors>({})
 
   useEffect(() => {
     // Testar conexão com API ao montar o componente
@@ -41,58 +51,150 @@ export function PayrollCalculator() {
     checkAPI()
   }, [])
 
+  const validateForm = (): boolean => {
+    const errors: FieldErrors = {};
+    let isValid = true;
+
+    // Validar nome
+    if (!nome || nome.trim().length < 3) {
+      errors.nome = "Nome deve ter no mínimo 3 caracteres";
+      isValid = false;
+    }
+
+    // Validar cargo
+    if (!cargo || cargo.trim().length < 2) {
+      errors.cargo = "Cargo deve ter no mínimo 2 caracteres";
+      isValid = false;
+    }
+
+    // Validar salário
+    const grossSalary = Number.parseFloat(salary);
+    if (!salary || isNaN(grossSalary)) {
+      errors.salary = "Salário é obrigatório";
+      isValid = false;
+    } else if (grossSalary <= 0) {
+      errors.salary = "Salário deve ser maior que zero";
+      isValid = false;
+    } else if (grossSalary < 1320) {
+      errors.salary = "Salário não pode ser menor que R$ 1.320,00";
+      isValid = false;
+    } else if (grossSalary > 100000) {
+      errors.salary = "Salário não pode exceder R$ 100.000,00";
+      isValid = false;
+    }
+
+    // Validar dependentes
+    const numDep = Number.parseInt(dependents);
+    if (isNaN(numDep) || numDep < 0) {
+      errors.dependents = "Número de dependentes inválido";
+      isValid = false;
+    } else if (numDep > 20) {
+      errors.dependents = "Número de dependentes não pode exceder 20";
+      isValid = false;
+    }
+
+    // Validar vale transporte
+    const vt = Number.parseFloat(valeTransporte);
+    if (isNaN(vt) || vt < 0) {
+      errors.valeTransporte = "Valor inválido";
+      isValid = false;
+    }
+
+    // Validar vale alimentação
+    const va = Number.parseFloat(valeAlimentacao);
+    if (isNaN(va) || va < 0) {
+      errors.valeAlimentacao = "Valor inválido";
+      isValid = false;
+    }
+
+    setFieldErrors(errors);
+    return isValid;
+  };
+
   const calculatePayroll = async () => {
-    const grossSalary = Number.parseFloat(salary)
-    if (isNaN(grossSalary) || grossSalary <= 0) {
-      toast.error("Por favor, insira um salário válido")
-      return
+    // Limpar erros anteriores
+    setFieldErrors({});
+
+    // Validar formulário
+    if (!validateForm()) {
+      toast.error("Por favor, corrija os erros no formulário");
+      return;
     }
 
-    if (!nome || !cargo) {
-      toast.error("Por favor, preencha nome e cargo")
-      return
-    }
+    const grossSalary = Number.parseFloat(salary);
 
-    setLoading(true)
+    setLoading(true);
     try {
       const funcionario = {
-        nome,
-        cpf: cpf || "000.000.000-00",
-        cargo,
+        nome: nome.trim(),
+        cpf: cpf.trim() || "000.000.000-00",
+        cargo: cargo.trim(),
         salarioBruto: grossSalary,
         numeroDependentes: Number.parseInt(dependents) || 0,
         recebePericulosidade: periculosidade,
         grauInsalubridade: insalubridade || "",
         valorValeTransporte: Number.parseFloat(valeTransporte) || 0,
         valorValeAlimentacao: Number.parseFloat(valeAlimentacao) || 0,
-      }
+      };
 
-      console.log("🚀 Enviando para API:", funcionario)
-      toast.loading("Calculando via backend...")
+      console.log("🚀 Enviando para API:", funcionario);
+      toast.loading("Calculando via backend...");
       
-      const folha = await calcularFolhaPagamento(funcionario)
+      const folha = await calcularFolhaPagamento(funcionario);
       
-      console.log("✅ Resposta da API:", folha)
-      setResult(folha)
-      toast.success("✅ Folha calculada pelo backend com sucesso!")
+      console.log("✅ Resposta da API:", folha);
+      setResult(folha);
+      toast.dismiss();
+      toast.success("✅ Folha calculada com sucesso!");
     } catch (error) {
-      console.error("❌ Erro ao calcular folha:", error)
-      toast.error("❌ Erro ao calcular. Verifique se o backend está rodando na porta 8080.")
-      setApiStatus("offline")
+      console.error("❌ Erro ao calcular folha:", error);
+      toast.dismiss();
+      
+      if (error instanceof APIError) {
+        // Tratamento específico por tipo de erro
+        if (error.isValidationError()) {
+          toast.error(`❌ Dados inválidos\n\n${error.details?.join("\n") || error.message}`, {
+            duration: 6000,
+          });
+        } else if (error.isSalarioError()) {
+          toast.error(`❌ ${error.message}`, { duration: 5000 });
+          setFieldErrors({ salary: error.message });
+        } else if (error.isDependentesError()) {
+          toast.error(`❌ ${error.message}`, { duration: 5000 });
+          setFieldErrors({ dependents: error.message });
+        } else if (error.isFuncionarioError()) {
+          toast.error(`❌ ${error.message}`, { duration: 5000 });
+        } else if (error.isCalculoError()) {
+          toast.error(`❌ Erro no cálculo: ${error.message}`, { duration: 6000 });
+        } else if (error.isServerError()) {
+          toast.error("❌ Erro no servidor. Tente novamente em alguns instantes.");
+          setApiStatus("offline");
+        } else {
+          toast.error(`❌ ${error.message}`);
+        }
+      } else if (error instanceof Error) {
+        toast.error(`❌ ${error.message}`, { duration: 5000 });
+        
+        if (error.message.includes('conectar') || error.message.includes('Backend offline')) {
+          setApiStatus("offline");
+        }
+      } else {
+        toast.error("❌ Erro inesperado. Tente novamente.");
+      }
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   return (
     <div className="grid gap-6 lg:grid-cols-2">
       <Card className="bg-card border-border">
         <CardHeader>
           <div className="flex items-center justify-between">
-            <CardTitle className="text-foreground flex items-center gap-2">
-              <Calculator className="h-5 w-5" />
-              Calculadora de Folha
-            </CardTitle>
+          <CardTitle className="text-foreground flex items-center gap-2">
+            <Calculator className="h-5 w-5" />
+            Calculadora de Folha
+          </CardTitle>
             <Badge
               variant={apiStatus === "online" ? "default" : apiStatus === "offline" ? "destructive" : "secondary"}
               className="flex items-center gap-1"
@@ -117,9 +219,15 @@ export function PayrollCalculator() {
                 id="nome"
                 placeholder="Nome do funcionário"
                 value={nome}
-                onChange={(e) => setNome(e.target.value)}
-                className="bg-secondary border-border text-foreground"
+                onChange={(e) => {
+                  setNome(e.target.value);
+                  if (fieldErrors.nome) setFieldErrors({...fieldErrors, nome: undefined});
+                }}
+                className={`bg-secondary border-border text-foreground ${fieldErrors.nome ? 'border-red-500 focus-visible:ring-red-500' : ''}`}
               />
+              {fieldErrors.nome && (
+                <p className="text-sm text-red-500">{fieldErrors.nome}</p>
+              )}
             </div>
 
             <div className="space-y-2">
@@ -144,9 +252,15 @@ export function PayrollCalculator() {
               id="cargo"
               placeholder="Ex: Desenvolvedor"
               value={cargo}
-              onChange={(e) => setCargo(e.target.value)}
-              className="bg-secondary border-border text-foreground"
+              onChange={(e) => {
+                setCargo(e.target.value);
+                if (fieldErrors.cargo) setFieldErrors({...fieldErrors, cargo: undefined});
+              }}
+              className={`bg-secondary border-border text-foreground ${fieldErrors.cargo ? 'border-red-500 focus-visible:ring-red-500' : ''}`}
             />
+            {fieldErrors.cargo && (
+              <p className="text-sm text-red-500">{fieldErrors.cargo}</p>
+            )}
           </div>
 
           <div className="space-y-2">
@@ -157,10 +271,18 @@ export function PayrollCalculator() {
               id="salary"
               type="number"
               placeholder="0.00"
+              step="0.01"
+              min="1320"
               value={salary}
-              onChange={(e) => setSalary(e.target.value)}
-              className="bg-secondary border-border text-foreground font-mono text-lg"
+              onChange={(e) => {
+                setSalary(e.target.value);
+                if (fieldErrors.salary) setFieldErrors({...fieldErrors, salary: undefined});
+              }}
+              className={`bg-secondary border-border text-foreground font-mono text-lg ${fieldErrors.salary ? 'border-red-500 focus-visible:ring-red-500' : ''}`}
             />
+            {fieldErrors.salary && (
+              <p className="text-sm text-red-500">{fieldErrors.salary}</p>
+            )}
           </div>
 
           <div className="space-y-2">
@@ -171,10 +293,18 @@ export function PayrollCalculator() {
               id="dependents"
               type="number"
               placeholder="0"
+              min="0"
+              max="20"
               value={dependents}
-              onChange={(e) => setDependents(e.target.value)}
-              className="bg-secondary border-border text-foreground"
+              onChange={(e) => {
+                setDependents(e.target.value);
+                if (fieldErrors.dependents) setFieldErrors({...fieldErrors, dependents: undefined});
+              }}
+              className={`bg-secondary border-border text-foreground ${fieldErrors.dependents ? 'border-red-500 focus-visible:ring-red-500' : ''}`}
             />
+            {fieldErrors.dependents && (
+              <p className="text-sm text-red-500">{fieldErrors.dependents}</p>
+            )}
           </div>
 
           <div className="grid grid-cols-2 gap-4">

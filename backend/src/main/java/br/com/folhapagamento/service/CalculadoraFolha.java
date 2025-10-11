@@ -1,5 +1,9 @@
 package br.com.folhapagamento.service;
 
+import br.com.folhapagamento.exception.SalarioInvalidoException;
+import br.com.folhapagamento.exception.DependentesInvalidosException;
+import br.com.folhapagamento.exception.FuncionarioInvalidoException;
+import br.com.folhapagamento.exception.CalculoException;
 import br.com.folhapagamento.interfaces.CalculadoraSalario;
 import br.com.folhapagamento.interfaces.CalculadoraAdicionais;
 import br.com.folhapagamento.interfaces.CalculadoraBeneficios;
@@ -11,6 +15,8 @@ import br.com.folhapagamento.model.FuncionarioCLT;
 import br.com.folhapagamento.model.FuncionarioPJ;
 import br.com.folhapagamento.model.abstracts.FuncionarioBase;
 import br.com.folhapagamento.service.abstracts.CalculadoraBase;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +25,10 @@ import java.util.List;
 
 @Service
 public class CalculadoraFolha implements FolhaPagamentoService {
+    
+    private static final Logger logger = LoggerFactory.getLogger(CalculadoraFolha.class);
+    private static final double SALARIO_MINIMO = 1320.00;
+    private static final double PERCENTUAL_MAX_VALE_TRANSPORTE = 0.06;
     
     @Autowired
     private CalculadoraSalario calculadoraSalario;
@@ -34,8 +44,12 @@ public class CalculadoraFolha implements FolhaPagamentoService {
     
     @Override
     public FolhaPagamento calcularFolha(Funcionario funcionario) {
-        FolhaPagamento folha = new FolhaPagamento();
-        folha.setFuncionario(funcionario);
+        // Validações de negócio
+        validarFuncionario(funcionario);
+        
+        try {
+            FolhaPagamento folha = new FolhaPagamento();
+            folha.setFuncionario(funcionario);
         folha.setSalarioBruto(funcionario.getSalarioBruto());
         
         folha.setSalarioPorHora(calculadoraSalario.calcularSalarioHora(funcionario.getSalarioBruto()));
@@ -60,7 +74,73 @@ public class CalculadoraFolha implements FolhaPagamentoService {
                                folha.getDescontoIRRF());
         folha.setSalarioLiquido(folha.getTotalAntesDescontos() - folha.getTotalDescontos());
         
-        return folha;
+            logger.info("Folha calculada com sucesso para funcionário: {}", funcionario.getNome());
+            return folha;
+            
+        } catch (Exception e) {
+            logger.error("Erro ao calcular folha para funcionário: {}", funcionario.getNome(), e);
+            throw new CalculoException("Erro ao processar o cálculo da folha de pagamento", e);
+        }
+    }
+    
+    /**
+     * Valida os dados do funcionário antes de calcular a folha
+     */
+    private void validarFuncionario(Funcionario funcionario) {
+        if (funcionario == null) {
+            throw new FuncionarioInvalidoException("Funcionário não pode ser nulo");
+        }
+        
+        // Valida nome
+        if (funcionario.getNome() == null || funcionario.getNome().trim().isEmpty()) {
+            throw new FuncionarioInvalidoException("Nome do funcionário é obrigatório");
+        }
+        
+        // Valida cargo
+        if (funcionario.getCargo() == null || funcionario.getCargo().trim().isEmpty()) {
+            throw new FuncionarioInvalidoException("Cargo do funcionário é obrigatório");
+        }
+        
+        // Valida salário
+        if (funcionario.getSalarioBruto() <= 0) {
+            throw new SalarioInvalidoException("Salário bruto deve ser maior que zero");
+        }
+        
+        if (funcionario.getSalarioBruto() < SALARIO_MINIMO) {
+            throw new SalarioInvalidoException(
+                String.format("Salário bruto (R$ %.2f) não pode ser menor que o salário mínimo (R$ %.2f)", 
+                    funcionario.getSalarioBruto(), SALARIO_MINIMO)
+            );
+        }
+        
+        // Valida dependentes
+        if (funcionario.getNumeroDependentes() < 0) {
+            throw new DependentesInvalidosException("Número de dependentes não pode ser negativo");
+        }
+        
+        if (funcionario.getNumeroDependentes() > 20) {
+            throw new DependentesInvalidosException("Número de dependentes não pode exceder 20");
+        }
+        
+        // Valida vale transporte
+        if (funcionario.getValorValeTransporte() < 0) {
+            throw new FuncionarioInvalidoException("Valor do vale transporte não pode ser negativo");
+        }
+        
+        double limiteValeTransporte = funcionario.getSalarioBruto() * PERCENTUAL_MAX_VALE_TRANSPORTE;
+        if (funcionario.getValorValeTransporte() > limiteValeTransporte) {
+            throw new FuncionarioInvalidoException(
+                String.format("Valor do vale transporte (R$ %.2f) não pode exceder 6%% do salário (R$ %.2f)", 
+                    funcionario.getValorValeTransporte(), limiteValeTransporte)
+            );
+        }
+        
+        // Valida vale alimentação
+        if (funcionario.getValorValeAlimentacao() < 0) {
+            throw new FuncionarioInvalidoException("Valor do vale alimentação não pode ser negativo");
+        }
+        
+        logger.debug("Validação de funcionário concluída: {}", funcionario.getNome());
     }
     
     public FolhaPagamento calcularFolhaPolimorfica(FuncionarioBase funcionarioBase) {
