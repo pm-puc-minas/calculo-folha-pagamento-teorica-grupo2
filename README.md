@@ -1,7 +1,7 @@
-# Sistema de Folha de Pagamento
+# 💼 Sistema de Folha de Pagamento - Full Stack
 
 ## 📋 Descrição
-Sistema completo para cálculo de folha de pagamento de funcionários, desenvolvido em Java Spring Boot .
+Sistema completo para cálculo de folha de pagamento com **Backend em Spring Boot** e **Frontend em Next.js 15**, totalmente integrados via API REST.
 
 ## 🎯 Objetivo
 Este projeto foi desenvolvido em duas sprints:
@@ -58,33 +58,61 @@ Este projeto foi desenvolvido em duas sprints:
 
 ### 📋 Pré-requisitos
 - **Java 17** ou superior
+- **Node.js 18** ou superior
+- **npm** ou **pnpm**
 - **Gradle** (opcional - o projeto inclui wrapper)
 - **Navegador web** para acessar a interface
 
-### ⚡ Comandos Rápidos
+### ⚡ Executar o Sistema Completo
+
+#### 1️⃣ **Iniciar o Backend (Spring Boot)**
+
+No PowerShell/Terminal:
 ```bash
-# 1. Compilar o projeto
-./gradlew build
-
-# 2. Executar a aplicação
-./gradlew bootRun
-
-# 3. Executar testes
-./gradlew test
-
-# 4. Limpar e recompilar
-./gradlew clean build
+cd backend
+.\gradlew.bat bootRun     # Windows
+# ou
+./gradlew bootRun         # Linux/Mac
 ```
 
-### 🌐 Acessar a Aplicação
-Após executar `./gradlew bootRun`, acesse:
+Aguarde a mensagem: `Started FolhaPagamentoApplication in X seconds`
+
+O backend estará em: **http://localhost:8080**
+
+---
+
+#### 2️⃣ **Iniciar o Frontend (Next.js)**
+
+Em outra janela de terminal:
+```bash
+cd frontend
+npm install    # Primeira vez apenas
+npm run dev
+```
+
+O frontend estará em: **http://localhost:3000** ou **http://localhost:3001**
+
+---
+
+### 🌐 URLs da Aplicação
 
 | Serviço | URL | Descrição |
 |---------|-----|-----------|
-| **API Base** | http://localhost:8080 | Endpoint principal da API |
-| **Swagger UI** | http://localhost:8080/swagger-ui/index.html | 📖 Documentação interativa |
-| **API Docs** | http://localhost:8080/api-docs | 📄 Documentação JSON |
-| **Console H2** | http://localhost:8080/h2-console | 🗄️ Banco de dados (se habilitado) |
+| **🎨 Frontend** | http://localhost:3001 | Interface web interativa |
+| **🔌 Backend API** | http://localhost:8080 | API REST Spring Boot |
+| **📖 Swagger UI** | http://localhost:8080/swagger-ui.html | Documentação interativa da API |
+| **📄 API Docs** | http://localhost:8080/api-docs | Documentação JSON OpenAPI |
+| **🗄️ Console H2** | http://localhost:8080/h2-console | Banco de dados em memória |
+
+---
+
+### 🎯 Acesso Rápido
+
+1. **Abra o navegador em:** http://localhost:3001
+2. A **Calculadora de Folha** aparecerá diretamente
+3. Verifique o badge **🟢 Backend Online** no canto superior direito
+4. Preencha os dados e clique em **"Calcular Folha"**
+5. Veja os resultados detalhados instantaneamente!
 
 ### 🔧 Comandos de Desenvolvimento
 ```bash
@@ -103,6 +131,51 @@ Após executar `./gradlew bootRun`, acesse:
 # Limpar build
 ./gradlew clean
 ```
+
+## 🎨 Funcionalidades da Interface Web
+
+### ✨ Calculadora de Folha Integrada
+
+**Campos do Formulário:**
+- 📝 **Nome** e **CPF** do funcionário
+- 💼 **Cargo**
+- 💰 **Salário Bruto** (valor base)
+- 👨‍👩‍👧‍👦 **Número de Dependentes** (para IRRF)
+- ⚠️ **Adicional de Periculosidade** (checkbox 30%)
+- ☢️ **Grau de Insalubridade** (Nenhum, Mínimo 10%, Médio 20%, Máximo 40%)
+- 🚌 **Vale Transporte** (desconto máximo 6%)
+- 🍽️ **Vale Alimentação** (benefício)
+
+**Recursos da Interface:**
+- 🟢 **Indicador de Status** - Badge mostrando se backend está online
+- ✅ **Validação em Tempo Real** - Campos obrigatórios marcados
+- 🔔 **Notificações Toast** - Feedback visual de cada ação
+- 📊 **Resultados Detalhados** - Card completo com todos os valores
+- 🎨 **Interface Moderna** - Dark/Light mode automático
+- 🚀 **Loading States** - Indicadores visuais durante processamento
+- 📱 **Design Responsivo** - Funciona em desktop, tablet e mobile
+
+**Resultados Exibidos:**
+- 💵 Salário Bruto
+- ➕ Adicionais (Periculosidade, Insalubridade)
+- 💰 Total antes dos descontos
+- ➖ Descontos (INSS, IRRF, Vale Transporte)
+- 🎁 Benefícios (Vale Alimentação)
+- 🏦 FGTS (8%)
+- ✅ **Salário Líquido Final**
+- ⏱️ Salário por hora
+- 📊 Percentual total de desconto
+
+### 🔍 Como Usar a Interface
+
+1. **Acesse** http://localhost:3001
+2. **Verifique** o badge 🟢 "Backend Online"
+3. **Preencha** os dados do funcionário
+4. **Clique** em "Calcular Folha"
+5. **Veja** os resultados detalhados instantaneamente
+6. **Abra o Console (F12)** para ver logs da integração
+
+---
 
 ## 🔌 Endpoints da API
 
@@ -209,6 +282,98 @@ Invoke-RestMethod -Uri "http://localhost:8080/api/calcular" -Method POST -Conten
 4. Clique em "Execute"
 5. Veja a resposta em tempo real
 
+## 🏗️ Arquitetura da Integração Frontend + Backend
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                   NAVEGADOR (localhost:3001)                 │
+│                                                              │
+│  ┌────────────────────────────────────────────────────────┐ │
+│  │          Next.js 15 + React 18 + TypeScript            │ │
+│  │                                                          │ │
+│  │  ┌──────────────────────────────────────────────────┐  │ │
+│  │  │  PayrollCalculator Component                      │  │ │
+│  │  │  - Formulário completo                           │  │ │
+│  │  │  - Validação de campos                           │  │ │
+│  │  │  - Indicador de status da API                    │  │ │
+│  │  │  - Notificações toast                            │  │ │
+│  │  └──────────────────────────────────────────────────┘  │ │
+│  │                          │                              │ │
+│  │                          ▼                              │ │
+│  │  ┌──────────────────────────────────────────────────┐  │ │
+│  │  │  API Client (lib/api.ts)                         │  │ │
+│  │  │  - calcularFolhaPagamento()                      │  │ │
+│  │  │  - testarAPI()                                   │  │ │
+│  │  │  - TypeScript interfaces                         │  │ │
+│  │  └──────────────────────────────────────────────────┘  │ │
+│  └────────────────────────────────────────────────────────┘ │
+└──────────────────────┬───────────────────────────────────────┘
+                       │
+                       │ HTTP POST /api/calcular
+                       │ Content-Type: application/json
+                       │ CORS habilitado
+                       ▼
+┌─────────────────────────────────────────────────────────────┐
+│              BACKEND (localhost:8080)                        │
+│                Spring Boot 3.2 + Java 17                    │
+│                                                              │
+│  ┌────────────────────────────────────────────────────────┐ │
+│  │  CorsConfig                                            │ │
+│  │  - Permite localhost:3000 e localhost:3001            │ │
+│  └────────────────────────────────────────────────────────┘ │
+│                          │                                   │
+│                          ▼                                   │
+│  ┌────────────────────────────────────────────────────────┐ │
+│  │  FolhaPagamentoController (REST API)                  │ │
+│  │  - POST /api/calcular                                 │ │
+│  │  - GET /api/teste                                     │ │
+│  └────────────────────────────────────────────────────────┘ │
+│                          │                                   │
+│                          ▼                                   │
+│  ┌────────────────────────────────────────────────────────┐ │
+│  │  CalculadoraFolha (Orquestrador)                      │ │
+│  │  - Coordena todas as calculadoras                     │ │
+│  └────────────────────────────────────────────────────────┘ │
+│           │              │              │              │     │
+│           ▼              ▼              ▼              ▼     │
+│  ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌──────────┐   │
+│  │ Salário  │  │Adicionais│  │Descontos │  │Benefícios│   │
+│  └──────────┘  └──────────┘  └──────────┘  └──────────┘   │
+│                          │                                   │
+│                          ▼                                   │
+│  ┌────────────────────────────────────────────────────────┐ │
+│  │  FolhaPagamento (Resultado JSON)                      │ │
+│  │  - salarioBruto, salarioLiquido                       │ │
+│  │  - descontos (INSS, IRRF, Vale Transporte)           │ │
+│  │  - adicionais (Periculosidade, Insalubridade)        │ │
+│  │  - benefícios (Vale Alimentação)                     │ │
+│  │  - FGTS, salário por hora                            │ │
+│  └────────────────────────────────────────────────────────┘ │
+└──────────────────────┬───────────────────────────────────────┘
+                       │
+                       │ JSON Response
+                       │ Status 200 OK
+                       ▼
+              ┌─────────────────┐
+              │   Frontend      │
+              │   Exibe         │
+              │   Resultados    │
+              └─────────────────┘
+```
+
+### 🔗 Integração Completa
+
+| Componente | Tecnologia | Responsabilidade |
+|------------|------------|------------------|
+| **Frontend** | Next.js 15 + React 18 + TypeScript | Interface do usuário, validação, exibição |
+| **API Client** | Fetch API + TypeScript | Comunicação HTTP com backend |
+| **Backend** | Spring Boot 3.2 + Java 17 | Lógica de negócio, cálculos |
+| **CORS** | Spring Web MVC | Permite requisições cross-origin |
+| **Validação** | React Hook Form + Zod | Validação no frontend |
+| **Notificações** | Sonner (Toast) | Feedback visual ao usuário |
+
+---
+
 ## 📁 Estrutura do Projeto
 
 ```
@@ -268,6 +433,29 @@ Invoke-RestMethod -Uri "http://localhost:8080/api/calcular" -Method POST -Conten
 │       └── 📁 enums/
 │           └── 🧪 GrauInsalubridadeTest.java       # Teste do enum
 └── 📁 build/                            # Arquivos compilados (gerado automaticamente)
+├── 📁 frontend/                         # Aplicação Next.js
+│   ├── 📄 package.json                  # Dependências do Node.js
+│   ├── 📄 tsconfig.json                 # Configuração do TypeScript
+│   ├── 📄 next.config.mjs               # Configuração do Next.js
+│   ├── 📁 app/                          # App Router do Next.js 15
+│   │   ├── 📄 layout.tsx                # Layout principal da aplicação
+│   │   ├── 📄 page.tsx                  # Página inicial (Calculadora)
+│   │   └── 📄 globals.css               # Estilos globais
+│   ├── 📁 components/                   # Componentes React
+│   │   ├── 🎨 payroll-calculator.tsx    # Calculadora de folha (integrado)
+│   │   ├── 🎨 payroll-dashboard.tsx     # Dashboard (backup)
+│   │   ├── 🎨 employee-table.tsx        # Tabela de funcionários
+│   │   ├── 🎨 payroll-chart.tsx         # Gráfico de evolução
+│   │   └── 📁 ui/                       # Componentes de UI (shadcn/ui)
+│   │       ├── button.tsx, card.tsx, input.tsx
+│   │       ├── select.tsx, checkbox.tsx, label.tsx
+│   │       ├── badge.tsx, toast.tsx, sonner.tsx
+│   │       └── ... (30+ componentes UI)
+│   ├── 📁 lib/                          # Utilitários e configurações
+│   │   ├── 🔌 api.ts                    # Cliente da API (integração)
+│   │   └── 🛠️ utils.ts                  # Funções utilitárias
+│   └── 📁 public/                       # Arquivos estáticos
+│       └── *.svg, *.png                 # Imagens e ícones
 ```
 
 ### 🏗️ Arquitetura SOLID do Sistema
@@ -338,16 +526,42 @@ Invoke-RestMethod -Uri "http://localhost:8080/api/calcular" -Method POST -Conten
 
 ## 🛠️ Tecnologias Utilizadas
 
+### Backend (Spring Boot)
+
 | Tecnologia | Versão | Propósito |
 |------------|--------|-----------|
 | **Java** | 17 | Linguagem de programação |
 | **Spring Boot** | 3.2.0 | Framework web |
 | **Spring Web** | 3.2.0 | API REST |
-| **SpringDoc OpenAPI** | 2.2.0 | Documentação da API |
+| **SpringDoc OpenAPI** | 2.2.0 | Documentação da API (Swagger) |
 | **H2 Database** | 2.2.224 | Banco de dados em memória |
 | **JUnit 5** | 5.10.0 | Testes unitários |
 | **Mockito** | 5.10.0 | Framework de mocks para testes |
 | **Gradle** | 8.5 | Build automation |
+
+### Frontend (Next.js)
+
+| Tecnologia | Versão | Propósito |
+|------------|--------|-----------|
+| **Next.js** | 15.2.4 | Framework React com SSR |
+| **React** | 18.3.1 | Biblioteca UI |
+| **TypeScript** | 5.x | Tipagem estática |
+| **Tailwind CSS** | 4.1.9 | Framework CSS utilitário |
+| **Radix UI** | latest | Componentes UI acessíveis |
+| **Sonner** | 1.7.4 | Sistema de notificações toast |
+| **Recharts** | latest | Biblioteca de gráficos |
+| **React Hook Form** | 7.60.0 | Gerenciamento de formulários |
+| **Zod** | 3.25.76 | Validação de schemas |
+| **Lucide React** | 0.454.0 | Ícones |
+
+### Integração
+
+| Tecnologia | Propósito |
+|------------|-----------|
+| **Fetch API** | Requisições HTTP do frontend para backend |
+| **CORS** | Permite comunicação cross-origin entre frontend e backend |
+| **JSON** | Formato de troca de dados entre cliente e servidor |
+| **REST** | Arquitetura da API |
 
 ## 🎯 Princípios SOLID Aplicados
 
@@ -499,8 +713,28 @@ java -jar build/libs/sistema-folha-pagamento-0.0.1-SNAPSHOT.jar
 - **Mantenha baixo acoplamento entre classes**
 
 
+## 📊 Resumo do Projeto
+
+| Aspecto | Detalhes |
+|---------|----------|
+| **Tipo** | Full Stack (Frontend + Backend) |
+| **Backend** | Spring Boot 3.2 + Java 17 |
+| **Frontend** | Next.js 15 + React 18 + TypeScript |
+| **Arquitetura** | REST API com CORS |
+| **Testes** | 94 testes unitários (JUnit + Mockito) |
+| **Conceitos OOP** | Herança, Polimorfismo, Interfaces, Classes Abstratas |
+| **Princípios** | SOLID |
+| **Documentação** | Swagger/OpenAPI |
+| **Interface** | Responsiva, moderna, com notificações em tempo real |
+| **Integração** | ✅ 100% funcional |
+
+---
+
 ## 👥 Autores
 
-- Allan Mateus Arruda De Souza
-- Lara Andrade Carvalho
+- **Allan Mateus Arruda De Souza**
+- **Lara Andrade Carvalho**
+
+**Última Atualização:** Outubro/2025  
+**Status:** ✅ Projeto Completo - Frontend + Backend Integrados
 
