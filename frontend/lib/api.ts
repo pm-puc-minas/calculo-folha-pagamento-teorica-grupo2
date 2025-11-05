@@ -1,9 +1,77 @@
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
 
+export interface LoginRequest {
+  username: string;
+  password: string;
+}
+
+export interface LoginResponse {
+  success: boolean;
+  message: string;
+  username?: string;
+  nome?: string;
+  role?: string;
+}
+
+export async function login(credentials: LoginRequest): Promise<LoginResponse> {
+  try {
+    const response = await fetch(`${API_BASE_URL}/api/auth/login`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      credentials: 'include',
+      body: JSON.stringify(credentials),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || 'Erro ao fazer login');
+    }
+
+    return response.json();
+  } catch (error) {
+    if (error instanceof Error) {
+      throw error;
+    }
+    throw new Error('Erro ao conectar com o servidor');
+  }
+}
+
+export async function logout(): Promise<void> {
+  try {
+    await fetch(`${API_BASE_URL}/api/auth/logout`, {
+      method: 'POST',
+      credentials: 'include',
+    });
+  } catch (error) {
+    console.error('Erro ao fazer logout:', error);
+  }
+}
+
+export async function getCurrentUser(): Promise<LoginResponse | null> {
+  try {
+    const response = await fetch(`${API_BASE_URL}/api/auth/me`, {
+      method: 'GET',
+      credentials: 'include',
+    });
+
+    if (!response.ok) {
+      return null;
+    }
+
+    const data = await response.json();
+    return data.success ? data : null;
+  } catch (error) {
+    return null;
+  }
+}
+
 export interface Funcionario {
   nome: string;
   cpf: string;
   cargo: string;
+  tipo: string;
   salarioBruto: number;
   numeroDependentes: number;
   recebePericulosidade: boolean;
@@ -89,6 +157,7 @@ export async function calcularFolhaPagamento(funcionario: Funcionario): Promise<
       headers: {
         'Content-Type': 'application/json',
       },
+      credentials: 'include',
       body: JSON.stringify(funcionario),
     });
 
@@ -114,7 +183,9 @@ export async function calcularFolhaPagamento(funcionario: Funcionario): Promise<
 
 export async function testarAPI(): Promise<string> {
   try {
-    const response = await fetch(`${API_BASE_URL}/api/teste`);
+    const response = await fetch(`${API_BASE_URL}/api/teste`, {
+      credentials: 'include'
+    });
     
     if (!response.ok) {
       throw new Error('API não disponível');

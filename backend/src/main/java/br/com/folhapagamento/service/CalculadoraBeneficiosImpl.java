@@ -27,7 +27,8 @@ public class CalculadoraBeneficiosImpl extends CalculadoraBase implements Calcul
     @Override
     public double calcularValeAlimentacao(Funcionario funcionario) {
         if (funcionario.getValorValeAlimentacao() > 0) {
-            return arredondarMonetario(funcionario.getValorValeAlimentacao() * 22);
+            // Retorna o valor mensal informado diretamente
+            return arredondarMonetario(funcionario.getValorValeAlimentacao());
         }
         return 0.0;
     }

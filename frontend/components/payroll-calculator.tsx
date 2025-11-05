@@ -37,7 +37,6 @@ export function PayrollCalculator() {
   const [fieldErrors, setFieldErrors] = useState<FieldErrors>({})
 
   useEffect(() => {
-    // Testar conexão com API ao montar o componente
     const checkAPI = async () => {
       try {
         await testarAPI()
@@ -55,19 +54,16 @@ export function PayrollCalculator() {
     const errors: FieldErrors = {};
     let isValid = true;
 
-    // Validar nome
     if (!nome || nome.trim().length < 3) {
       errors.nome = "Nome deve ter no mínimo 3 caracteres";
       isValid = false;
     }
 
-    // Validar cargo
     if (!cargo || cargo.trim().length < 2) {
       errors.cargo = "Cargo deve ter no mínimo 2 caracteres";
       isValid = false;
     }
 
-    // Validar salário
     const grossSalary = Number.parseFloat(salary);
     if (!salary || isNaN(grossSalary)) {
       errors.salary = "Salário é obrigatório";
@@ -93,14 +89,12 @@ export function PayrollCalculator() {
       isValid = false;
     }
 
-    // Validar vale transporte
     const vt = Number.parseFloat(valeTransporte);
     if (isNaN(vt) || vt < 0) {
       errors.valeTransporte = "Valor inválido";
       isValid = false;
     }
 
-    // Validar vale alimentação
     const va = Number.parseFloat(valeAlimentacao);
     if (isNaN(va) || va < 0) {
       errors.valeAlimentacao = "Valor inválido";
@@ -112,10 +106,8 @@ export function PayrollCalculator() {
   };
 
   const calculatePayroll = async () => {
-    // Limpar erros anteriores
     setFieldErrors({});
-
-    // Validar formulário
+    
     if (!validateForm()) {
       toast.error("Por favor, corrija os erros no formulário");
       return;
@@ -151,7 +143,6 @@ export function PayrollCalculator() {
       toast.dismiss();
       
       if (error instanceof APIError) {
-        // Tratamento específico por tipo de erro
         if (error.isValidationError()) {
           toast.error(`❌ Dados inválidos\n\n${error.details?.join("\n") || error.message}`, {
             duration: 6000,
@@ -269,14 +260,25 @@ export function PayrollCalculator() {
             </Label>
             <Input
               id="salary"
-              type="number"
-              placeholder="0.00"
-              step="0.01"
-              min="1320"
+              type="text"
+              inputMode="decimal"
+              placeholder="Ex: 5000.00"
               value={salary}
               onChange={(e) => {
-                setSalary(e.target.value);
-                if (fieldErrors.salary) setFieldErrors({...fieldErrors, salary: undefined});
+                const value = e.target.value;
+                // Permite apenas números, ponto e vírgula
+                if (value === '' || /^[0-9.,]*$/.test(value)) {
+                  setSalary(value);
+                  if (fieldErrors.salary) setFieldErrors({...fieldErrors, salary: undefined});
+                }
+              }}
+              onBlur={(e) => {
+                // Formata o valor ao sair do campo
+                const value = e.target.value.replace(',', '.');
+                const num = parseFloat(value);
+                if (!isNaN(num)) {
+                  setSalary(num.toString());
+                }
               }}
               className={`bg-secondary border-border text-foreground font-mono text-lg ${fieldErrors.salary ? 'border-red-500 focus-visible:ring-red-500' : ''}`}
             />
@@ -291,14 +293,16 @@ export function PayrollCalculator() {
             </Label>
             <Input
               id="dependents"
-              type="number"
-              placeholder="0"
-              min="0"
-              max="20"
+              type="text"
+              inputMode="numeric"
+              placeholder="Ex: 2"
               value={dependents}
               onChange={(e) => {
-                setDependents(e.target.value);
-                if (fieldErrors.dependents) setFieldErrors({...fieldErrors, dependents: undefined});
+                const value = e.target.value;
+                if (value === '' || /^[0-9]*$/.test(value)) {
+                  setDependents(value);
+                  if (fieldErrors.dependents) setFieldErrors({...fieldErrors, dependents: undefined});
+                }
               }}
               className={`bg-secondary border-border text-foreground ${fieldErrors.dependents ? 'border-red-500 focus-visible:ring-red-500' : ''}`}
             />
@@ -310,30 +314,64 @@ export function PayrollCalculator() {
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="valeTransporte" className="text-foreground">
-                Vale Transporte (R$)
+                Vale Transporte Mensal (R$)
               </Label>
               <Input
                 id="valeTransporte"
-                type="number"
-                placeholder="0.00"
+                type="text"
+                inputMode="decimal"
+                placeholder="Ex: 200.00"
                 value={valeTransporte}
-                onChange={(e) => setValeTransporte(e.target.value)}
-                className="bg-secondary border-border text-foreground font-mono"
+                onChange={(e) => {
+                  const value = e.target.value;
+                  if (value === '' || /^[0-9.,]*$/.test(value)) {
+                    setValeTransporte(value);
+                    if (fieldErrors.valeTransporte) setFieldErrors({...fieldErrors, valeTransporte: undefined});
+                  }
+                }}
+                onBlur={(e) => {
+                  const value = e.target.value.replace(',', '.');
+                  const num = parseFloat(value);
+                  if (!isNaN(num)) {
+                    setValeTransporte(num.toString());
+                  }
+                }}
+                className={`bg-secondary border-border text-foreground font-mono ${fieldErrors.valeTransporte ? 'border-red-500 focus-visible:ring-red-500' : ''}`}
               />
+              {fieldErrors.valeTransporte && (
+                <p className="text-sm text-red-500">{fieldErrors.valeTransporte}</p>
+              )}
             </div>
 
             <div className="space-y-2">
               <Label htmlFor="valeAlimentacao" className="text-foreground">
-                Vale Alimentação (R$)
+                Vale Alimentação Mensal (R$)
               </Label>
               <Input
                 id="valeAlimentacao"
-                type="number"
-                placeholder="0.00"
+                type="text"
+                inputMode="decimal"
+                placeholder="Ex: 1200.00"
                 value={valeAlimentacao}
-                onChange={(e) => setValeAlimentacao(e.target.value)}
-                className="bg-secondary border-border text-foreground font-mono"
+                onChange={(e) => {
+                  const value = e.target.value;
+                  if (value === '' || /^[0-9.,]*$/.test(value)) {
+                    setValeAlimentacao(value);
+                    if (fieldErrors.valeAlimentacao) setFieldErrors({...fieldErrors, valeAlimentacao: undefined});
+                  }
+                }}
+                onBlur={(e) => {
+                  const value = e.target.value.replace(',', '.');
+                  const num = parseFloat(value);
+                  if (!isNaN(num)) {
+                    setValeAlimentacao(num.toString());
+                  }
+                }}
+                className={`bg-secondary border-border text-foreground font-mono ${fieldErrors.valeAlimentacao ? 'border-red-500 focus-visible:ring-red-500' : ''}`}
               />
+              {fieldErrors.valeAlimentacao && (
+                <p className="text-sm text-red-500">{fieldErrors.valeAlimentacao}</p>
+              )}
             </div>
           </div>
 

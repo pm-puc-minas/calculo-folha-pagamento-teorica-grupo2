@@ -28,6 +28,16 @@ Este projeto foi desenvolvido em duas sprints:
 - **IRRF**: Tabela progressiva (0% a 27,5%)
 - **FGTS**: 8% da base de cálculo
 
+### 🔐 Sistema de Autenticação
+- **Login Obrigatório**: Acesso protegido por autenticação
+- **Gerenciamento de Sessão**: Cookies seguros para manter usuário logado
+- **Proteção de Rotas**: Apenas usuários autenticados podem acessar o sistema
+- **Logout Seguro**: Encerramento adequado da sessão
+
+#### 🔑 Credenciais de Acesso
+- **Usuário:** `rh`
+- **Senha:** `rh123`
+
 ## 🏗️ Sprint 2 - Conceitos OOP 
 
 ### 🔄 **Herança**
@@ -65,32 +75,26 @@ Este projeto foi desenvolvido em duas sprints:
 
 ### ⚡ Executar o Sistema Completo
 
-#### 1️⃣ **Iniciar o Backend (Spring Boot)**
+### Backend (Spring Boot)
 
-No PowerShell/Terminal:
 ```bash
 cd backend
-.\gradlew.bat bootRun     # Windows
-# ou
-./gradlew bootRun         # Linux/Mac
+.\gradlew.bat bootRun
 ```
 
-Aguarde a mensagem: `Started FolhaPagamentoApplication in X seconds`
+Aguarde: `Started FolhaPagamentoApplication in X seconds`
 
-O backend estará em: **http://localhost:8080**
+**URL:** http://localhost:8080
 
----
+### Frontend (Next.js)
 
-#### 2️⃣ **Iniciar o Frontend (Next.js)**
-
-Em outra janela de terminal:
 ```bash
 cd frontend
-npm install    # Primeira vez apenas
+npm install
 npm run dev
 ```
 
-O frontend estará em: **http://localhost:3000** ou **http://localhost:3001**
+**URL:** http://localhost:3001
 
 ---
 
@@ -98,6 +102,8 @@ O frontend estará em: **http://localhost:3000** ou **http://localhost:3001**
 
 | Serviço | URL | Descrição |
 |---------|-----|-----------|
+| **Login** | http://localhost:3001/login | Tela de login do sistema |
+| **Dashboard** | http://localhost:3001/dashboard | Sistema de folha (requer login) |
 | **🎨 Frontend** | http://localhost:3001 | Interface web interativa |
 | **🔌 Backend API** | http://localhost:8080 | API REST Spring Boot |
 | **📖 Swagger UI** | http://localhost:8080/swagger-ui.html | Documentação interativa da API |
@@ -108,11 +114,10 @@ O frontend estará em: **http://localhost:3000** ou **http://localhost:3001**
 
 ### 🎯 Acesso Rápido
 
-1. **Abra o navegador em:** http://localhost:3001
-2. A **Calculadora de Folha** aparecerá diretamente
-3. Verifique o badge **🟢 Backend Online** no canto superior direito
-4. Preencha os dados e clique em **"Calcular Folha"**
-5. Veja os resultados detalhados instantaneamente!
+1. Acesse http://localhost:3001
+2. Faça login: **rh** / **rh123**
+3. Use a calculadora de folha
+4. Visualize os resultados instantaneamente
 
 ### 🔧 Comandos de Desenvolvimento
 ```bash
@@ -169,9 +174,10 @@ O frontend estará em: **http://localhost:3000** ou **http://localhost:3001**
 ### 🔍 Como Usar a Interface
 
 1. **Acesse** http://localhost:3001
-2. **Verifique** o badge 🟢 "Backend Online"
-3. **Preencha** os dados do funcionário
-4. **Clique** em "Calcular Folha"
+2. **Faça Login** com usuário **rh** e senha **rh123**
+3. **Verifique** o badge 🟢 "Backend Online" no dashboard
+4. **Preencha** os dados do funcionário
+5. **Clique** em "Calcular Folha"
 5. **Veja** os resultados detalhados instantaneamente
 6. **Abra o Console (F12)** para ver logs da integração
 
@@ -366,10 +372,11 @@ Invoke-RestMethod -Uri "http://localhost:8080/api/calcular" -Method POST -Conten
 | Componente | Tecnologia | Responsabilidade |
 |------------|------------|------------------|
 | **Frontend** | Next.js 15 + React 18 + TypeScript | Interface do usuário, validação, exibição |
+| **Autenticação** | Spring Security + Session Cookies | Login, logout, proteção de rotas |
 | **API Client** | Fetch API + TypeScript | Comunicação HTTP com backend |
 | **Backend** | Spring Boot 3.2 + Java 17 | Lógica de negócio, cálculos |
 | **CORS** | Spring Web MVC | Permite requisições cross-origin |
-| **Validação** | React Hook Form + Zod | Validação no frontend |
+| **Validação** | Bean Validation + React | Validação em ambos os lados |
 | **Notificações** | Sonner (Toast) | Feedback visual ao usuário |
 
 ---
@@ -533,6 +540,9 @@ Invoke-RestMethod -Uri "http://localhost:8080/api/calcular" -Method POST -Conten
 | **Java** | 17 | Linguagem de programação |
 | **Spring Boot** | 3.2.0 | Framework web |
 | **Spring Web** | 3.2.0 | API REST |
+| **Spring Security** | 3.2.0 | Autenticação e autorização |
+| **Spring Data JPA** | 3.2.0 | Persistência de dados |
+| **Spring Validation** | 3.2.0 | Validação de dados |
 | **SpringDoc OpenAPI** | 2.2.0 | Documentação da API (Swagger) |
 | **H2 Database** | 2.2.224 | Banco de dados em memória |
 | **JUnit 5** | 5.10.0 | Testes unitários |
@@ -718,9 +728,10 @@ java -jar build/libs/sistema-folha-pagamento-0.0.1-SNAPSHOT.jar
 | Aspecto | Detalhes |
 |---------|----------|
 | **Tipo** | Full Stack (Frontend + Backend) |
-| **Backend** | Spring Boot 3.2 + Java 17 |
+| **Backend** | Spring Boot 3.2 + Java 17 + Spring Security |
 | **Frontend** | Next.js 15 + React 18 + TypeScript |
-| **Arquitetura** | REST API com CORS |
+| **Autenticação** | ✅ Login obrigatório com sessão segura |
+| **Arquitetura** | REST API com CORS e proteção de rotas |
 | **Testes** | 94 testes unitários (JUnit + Mockito) |
 | **Conceitos OOP** | Herança, Polimorfismo, Interfaces, Classes Abstratas |
 | **Princípios** | SOLID |

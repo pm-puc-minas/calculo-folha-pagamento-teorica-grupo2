@@ -14,6 +14,9 @@ public class Funcionario {
     @Size(min = 2, max = 50, message = "Cargo deve ter entre 2 e 50 caracteres")
     private String cargo;
     
+    @NotBlank(message = "Tipo de funcionário é obrigatório")
+    private String tipo;
+    
     @NotNull(message = "Salário bruto é obrigatório")
     @Positive(message = "Salário bruto deve ser maior que zero")
     @DecimalMin(value = "1320.00", message = "Salário bruto não pode ser menor que o salário mínimo (R$ 1.320,00)")
@@ -72,6 +75,14 @@ public class Funcionario {
     
     public void setCargo(String cargo) {
         this.cargo = cargo;
+    }
+    
+    public String getTipo() {
+        return tipo;
+    }
+    
+    public void setTipo(String tipo) {
+        this.tipo = tipo;
     }
     
     public double getSalarioBruto() {

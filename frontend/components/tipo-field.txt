@@ -1,0 +1,40 @@
+// Adicione isso após o campo "Cargo" no payroll-calculator.tsx
+
+const [tipo, setTipo] = useState("CLT")
+
+// No validateForm, adicione:
+if (!tipo || (tipo !== "CLT" && tipo !== "PJ")) {
+  errors.tipo = "Selecione o tipo de funcionário";
+  isValid = false;
+}
+
+// No calculatePayroll, adicione tipo no objeto:
+const funcionario: Funcionario = {
+  nome,
+  cpf,
+  cargo,
+  tipo,  // <-- ADICIONAR
+  salarioBruto: grossSalary,
+  // ...
+}
+
+// HTML para adicionar após o campo Cargo:
+<div className="space-y-2">
+  <Label htmlFor="tipo" className="text-foreground">
+    Tipo de Funcionário *
+  </Label>
+  <Select value={tipo} onValueChange={setTipo}>
+    <SelectTrigger className="bg-secondary border-border text-foreground">
+      <SelectValue placeholder="Selecione" />
+    </SelectTrigger>
+    <SelectContent>
+      <SelectItem value="CLT">CLT (Consolidação das Leis do Trabalho)</SelectItem>
+      <SelectItem value="PJ">PJ (Pessoa Jurídica)</SelectItem>
+    </SelectContent>
+  </Select>
+  {fieldErrors.tipo && (
+    <p className="text-sm text-red-500">{fieldErrors.tipo}</p>
+  )}
+</div>
+
+

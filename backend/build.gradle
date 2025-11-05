@@ -18,17 +18,25 @@ repositories {
 }
 
 dependencies {
-    // Spring Boot básico
+
     implementation 'org.springframework.boot:spring-boot-starter-web'
     
-    // Banco de dados simples
+    // Spring Security
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    
+    // Banco
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     runtimeOnly 'com.h2database:h2'
+    
+    // Validação
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
     
     // Swagger/OpenAPI
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.2.0'
     
-    // Testes básicos
+    // Teste
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.security:spring-security-test'
     testImplementation 'org.mockito:mockito-core'
     testImplementation 'org.mockito:mockito-junit-jupiter'
 }
