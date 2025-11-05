@@ -19,6 +19,7 @@ public class CalculadoraBeneficiosImpl extends CalculadoraBase implements Calcul
         return valeAlimentacao - descontoValeTransporte;
     }
     
+    //Talvez sobreescrever toString? 
     @Override
     public String getNomeCalculadora() {
         return "Calculadora de Benefícios";

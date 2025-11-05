@@ -3,6 +3,7 @@ package br.com.folhapagamento.model.abstracts;
 import java.time.LocalDate;
 import java.util.Objects;
 
+//Boa! Classe abstrata seguindo nomenclatura clara de Base
 public abstract class FuncionarioBase {
     
     protected String nome;
