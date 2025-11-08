@@ -1,0 +1,139 @@
+databaseChangeLog:
+  - changeSet:
+      id: 002-create-folhas-pagamento-table
+      author: sistema
+      comment: Criação da tabela folhas_pagamento
+      changes:
+        - createTable:
+            tableName: folhas_pagamento
+            columns:
+              - column:
+                  name: id
+                  type: BIGSERIAL
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: funcionario_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: salario_bruto
+                  type: DECIMAL(10,2)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: salario_por_hora
+                  type: DECIMAL(10,2)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: adicional_periculosidade
+                  type: DECIMAL(10,2)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: adicional_insalubridade
+                  type: DECIMAL(10,2)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: vale_alimentacao
+                  type: DECIMAL(10,2)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: desconto_vale_transporte
+                  type: DECIMAL(10,2)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: desconto_inss
+                  type: DECIMAL(10,2)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: desconto_irrf
+                  type: DECIMAL(10,2)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: fgts
+                  type: DECIMAL(10,2)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: total_antes_descontos
+                  type: DECIMAL(10,2)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: total_descontos
+                  type: DECIMAL(10,2)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: salario_liquido
+                  type: DECIMAL(10,2)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: mes_referencia
+                  type: INTEGER
+                  constraints:
+                    nullable: false
+              - column:
+                  name: ano_referencia
+                  type: INTEGER
+                  constraints:
+                    nullable: false
+              - column:
+                  name: data_criacao
+                  type: TIMESTAMP
+                  constraints:
+                    nullable: false
+              - column:
+                  name: data_atualizacao
+                  type: TIMESTAMP
+                  constraints:
+                    nullable: false
+        
+        - addForeignKeyConstraint:
+            baseTableName: folhas_pagamento
+            baseColumnNames: funcionario_id
+            constraintName: fk_funcionario
+            referencedTableName: funcionarios
+            referencedColumnNames: id
+            onDelete: CASCADE
+        
+        - createIndex:
+            indexName: idx_funcionario_id
+            tableName: folhas_pagamento
+            columns:
+              - column:
+                  name: funcionario_id
+        
+        - createIndex:
+            indexName: idx_mes_ano
+            tableName: folhas_pagamento
+            columns:
+              - column:
+                  name: mes_referencia
+              - column:
+                  name: ano_referencia
+        
+        - createIndex:
+            indexName: idx_salario_liquido
+            tableName: folhas_pagamento
+            columns:
+              - column:
+                  name: salario_liquido
+        
+        - createIndex:
+            indexName: idx_data_criacao_folha
+            tableName: folhas_pagamento
+            columns:
+              - column:
+                  name: data_criacao
+

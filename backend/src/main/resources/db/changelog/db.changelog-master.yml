@@ -1,0 +1,8 @@
+databaseChangeLog:
+  - include:
+      file: db/changelog/changes/001-create-funcionarios-table.yml
+  - include:
+      file: db/changelog/changes/002-create-folhas-pagamento-table.yml
+  - include:
+      file: db/changelog/changes/003-insert-example-data.yml
+

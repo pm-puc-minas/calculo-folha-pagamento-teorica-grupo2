@@ -121,6 +121,7 @@ export function PayrollCalculator() {
         nome: nome.trim(),
         cpf: cpf.trim() || "000.000.000-00",
         cargo: cargo.trim(),
+        tipo: "CLT", // Tipo padrão para funcionários CLT
         salarioBruto: grossSalary,
         numeroDependentes: Number.parseInt(dependents) || 0,
         recebePericulosidade: periculosidade,
