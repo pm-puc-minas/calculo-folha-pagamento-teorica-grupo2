@@ -2,7 +2,7 @@ package br.com.folhapagamento.controller;
 
 import br.com.folhapagamento.model.FolhaPagamento;
 import br.com.folhapagamento.model.Funcionario;
-import br.com.folhapagamento.interfaces.FolhaPagamentoService;
+import br.com.folhapagamento.interfaces.IFolhaPagamentoService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 public class CalculoController {
     
     @Autowired
-    private FolhaPagamentoService folhaPagamentoService;
+    private IFolhaPagamentoService folhaPagamentoService;
     
     @PostMapping("/calcular")
     @Operation(summary = "Calcular folha de pagamento", description = "Calcula a folha de pagamento completa de um funcionário")

@@ -2,7 +2,7 @@ package br.com.folhapagamento.controller;
 
 import br.com.folhapagamento.model.FolhaPagamento;
 import br.com.folhapagamento.model.Funcionario;
-import br.com.folhapagamento.interfaces.FolhaPagamentoService;
+import br.com.folhapagamento.interfaces.IFolhaPagamentoService;
 import br.com.folhapagamento.model.entity.FolhaPagamentoEntity;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -23,7 +23,7 @@ import java.util.Optional;
 public class FolhaPagamentoController {
     
     @Autowired
-    private br.com.folhapagamento.interfaces.FolhaPagamentoService folhaPagamentoService;
+    private br.com.folhapagamento.interfaces.IFolhaPagamentoService folhaPagamentoService;
     
     @Autowired
     private br.com.folhapagamento.service.FolhaPagamentoService folhaPagamentoServiceEntity;

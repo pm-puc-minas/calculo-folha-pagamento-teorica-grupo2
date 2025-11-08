@@ -1,12 +1,12 @@
 package br.com.folhapagamento.service;
 
-import br.com.folhapagamento.interfaces.CalculadoraBeneficios;
+import br.com.folhapagamento.interfaces.ICalculadoraBeneficios;
 import br.com.folhapagamento.model.Funcionario;
 import br.com.folhapagamento.service.abstracts.CalculadoraBase;
 import org.springframework.stereotype.Service;
 
 @Service
-public class CalculadoraBeneficiosImpl extends CalculadoraBase implements CalculadoraBeneficios {
+public class CalculadoraBeneficiosImpl extends CalculadoraBase implements ICalculadoraBeneficios {
     
     private static final double PERCENTUAL_VALE_TRANSPORTE = 0.06;
     private static final double VALOR_MAXIMO_VALE_ALIMENTACAO = 550.00;

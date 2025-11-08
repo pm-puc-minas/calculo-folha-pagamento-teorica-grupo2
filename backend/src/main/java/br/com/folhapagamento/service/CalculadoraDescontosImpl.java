@@ -1,12 +1,12 @@
 package br.com.folhapagamento.service;
 
-import br.com.folhapagamento.interfaces.CalculadoraDescontos;
+import br.com.folhapagamento.interfaces.ICalculadoraDescontos;
 import br.com.folhapagamento.model.Funcionario;
 import br.com.folhapagamento.service.abstracts.CalculadoraBase;
 import org.springframework.stereotype.Service;
 
 @Service
-public class CalculadoraDescontosImpl extends CalculadoraBase implements CalculadoraDescontos {
+public class CalculadoraDescontosImpl extends CalculadoraBase implements ICalculadoraDescontos {
     
     private static final double FAIXA1_INSS = 1320.00;
     private static final double FAIXA2_INSS = 2571.29;

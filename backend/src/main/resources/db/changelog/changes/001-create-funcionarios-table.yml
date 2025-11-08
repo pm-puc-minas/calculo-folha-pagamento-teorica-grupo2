@@ -3,6 +3,11 @@ databaseChangeLog:
       id: 001-create-funcionarios-table
       author: sistema
       comment: Criação da tabela funcionarios
+      preConditions:
+        - onFail: MARK_RAN
+        - not:
+            - tableExists:
+                tableName: funcionarios
       changes:
         - createTable:
             tableName: funcionarios

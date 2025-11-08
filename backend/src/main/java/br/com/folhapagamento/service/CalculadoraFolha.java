@@ -4,11 +4,11 @@ import br.com.folhapagamento.exception.SalarioInvalidoException;
 import br.com.folhapagamento.exception.DependentesInvalidosException;
 import br.com.folhapagamento.exception.FuncionarioInvalidoException;
 import br.com.folhapagamento.exception.CalculoException;
-import br.com.folhapagamento.interfaces.CalculadoraSalario;
-import br.com.folhapagamento.interfaces.CalculadoraAdicionais;
-import br.com.folhapagamento.interfaces.CalculadoraBeneficios;
-import br.com.folhapagamento.interfaces.CalculadoraDescontos;
-import br.com.folhapagamento.interfaces.FolhaPagamentoService;
+import br.com.folhapagamento.interfaces.ICalculadoraSalario;
+import br.com.folhapagamento.interfaces.ICalculadoraAdicionais;
+import br.com.folhapagamento.interfaces.ICalculadoraBeneficios;
+import br.com.folhapagamento.interfaces.ICalculadoraDescontos;
+import br.com.folhapagamento.interfaces.IFolhaPagamentoService;
 import br.com.folhapagamento.model.FolhaPagamento;
 import br.com.folhapagamento.model.Funcionario;
 import br.com.folhapagamento.model.FuncionarioCLT;
@@ -24,23 +24,23 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class CalculadoraFolha implements FolhaPagamentoService {
+public class CalculadoraFolha implements IFolhaPagamentoService {
     
     private static final Logger logger = LoggerFactory.getLogger(CalculadoraFolha.class);
     private static final double SALARIO_MINIMO = 1320.00;
     private static final double PERCENTUAL_MAX_VALE_TRANSPORTE = 0.06;
     
     @Autowired
-    private CalculadoraSalario calculadoraSalario;
+    private ICalculadoraSalario calculadoraSalario;
     
     @Autowired
-    private CalculadoraAdicionais calculadoraAdicionais;
+    private ICalculadoraAdicionais calculadoraAdicionais;
     
     @Autowired
-    private CalculadoraBeneficios calculadoraBeneficios;
+    private ICalculadoraBeneficios calculadoraBeneficios;
     
     @Autowired
-    private CalculadoraDescontos calculadoraDescontos;
+    private ICalculadoraDescontos calculadoraDescontos;
     
     @Override
     public FolhaPagamento calcularFolha(Funcionario funcionario) {

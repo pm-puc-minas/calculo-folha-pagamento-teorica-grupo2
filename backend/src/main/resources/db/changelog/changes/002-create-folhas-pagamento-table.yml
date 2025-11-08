@@ -3,6 +3,11 @@ databaseChangeLog:
       id: 002-create-folhas-pagamento-table
       author: sistema
       comment: Criação da tabela folhas_pagamento
+      preConditions:
+        - onFail: MARK_RAN
+        - not:
+            - tableExists:
+                tableName: folhas_pagamento
       changes:
         - createTable:
             tableName: folhas_pagamento
