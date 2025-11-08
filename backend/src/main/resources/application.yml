@@ -1,0 +1,50 @@
+spring:
+  application:
+    name: folha-pagamento
+  
+  server:
+    port: 8080
+  
+  datasource:
+    url: jdbc:postgresql://localhost:5433/folha_pagamento
+    username: postgres
+    password: '@procelaA12'
+    driver-class-name: org.postgresql.Driver
+  
+  jpa:
+    hibernate:
+      ddl-auto: none
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        jdbc:
+          lob:
+            non_contextual_creation: true
+  
+  liquibase:
+    change-log: classpath:db/changelog/db.changelog-master.yml
+    enabled: true
+    drop-first: false
+
+springdoc:
+  api-docs:
+    path: /api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    enabled: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: always
+  health:
+    db:
+      enabled: true
+      show-details: always
+    defaults:
+      enabled: true

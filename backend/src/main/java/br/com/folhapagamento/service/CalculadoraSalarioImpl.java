@@ -1,12 +1,12 @@
 package br.com.folhapagamento.service;
 
-import br.com.folhapagamento.interfaces.CalculadoraSalario;
+import br.com.folhapagamento.interfaces.ICalculadoraSalario;
 import br.com.folhapagamento.model.Funcionario;
 import br.com.folhapagamento.service.abstracts.CalculadoraBase;
 import org.springframework.stereotype.Service;
 
 @Service
-public class CalculadoraSalarioImpl extends CalculadoraBase implements CalculadoraSalario {
+public class CalculadoraSalarioImpl extends CalculadoraBase implements ICalculadoraSalario {
     
     private static final double HORAS_TRABALHADAS_MES = 200.0;
     

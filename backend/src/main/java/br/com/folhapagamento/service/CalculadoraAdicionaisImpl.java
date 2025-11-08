@@ -2,12 +2,12 @@ package br.com.folhapagamento.service;
 
 import br.com.folhapagamento.enums.GrauInsalubridade;
 import br.com.folhapagamento.model.Funcionario;
-import br.com.folhapagamento.interfaces.CalculadoraAdicionais;
+import br.com.folhapagamento.interfaces.ICalculadoraAdicionais;
 import br.com.folhapagamento.service.abstracts.CalculadoraBase;
 import org.springframework.stereotype.Service;
 
 @Service
-public class CalculadoraAdicionaisImpl extends CalculadoraBase implements CalculadoraAdicionais {
+public class CalculadoraAdicionaisImpl extends CalculadoraBase implements ICalculadoraAdicionais {
     
     private static final double SALARIO_MINIMO = 1380.60;
     private static final double PERCENTUAL_PERICULOSIDADE = 0.30;

@@ -1,85 +1,91 @@
-package br.com.folhapagamento.model;
+package br.com.folhapagamento.model.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import jakarta.validation.constraints.DecimalMax;
-import jakarta.validation.constraints.DecimalMin;
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
-import jakarta.validation.constraints.PositiveOrZero;
-import jakarta.validation.constraints.Size;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
+import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "tb_funcionarios")
-public class Funcionario {
+@Table(name = "funcionarios")
+public class FuncionarioEntity {
+    
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     
     @NotBlank(message = "Nome é obrigatório")
     @Size(min = 3, max = 100, message = "Nome deve ter entre 3 e 100 caracteres")
+    @Column(nullable = false, length = 100)
     private String nome;
     
+    @Column(unique = true, length = 14)
     private String cpf;
     
     @NotBlank(message = "Cargo é obrigatório")
     @Size(min = 2, max = 50, message = "Cargo deve ter entre 2 e 50 caracteres")
+    @Column(nullable = false, length = 50)
     private String cargo;
-
-    @NotBlank(message = "Departamento é obrigatório")
-    private String departamento;
     
     @NotBlank(message = "Tipo de funcionário é obrigatório")
+    @Column(nullable = false, length = 10)
     private String tipo;
     
     @NotNull(message = "Salário bruto é obrigatório")
     @Positive(message = "Salário bruto deve ser maior que zero")
-    @DecimalMin(value = "1320.00", message = "Salário bruto não pode ser menor que o salário mínimo (R$ 1.320,00)")
+    @DecimalMin(value = "1320.00", message = "Salário bruto não pode ser menor que o salário mínimo")
     @DecimalMax(value = "100000.00", message = "Salário bruto não pode exceder R$ 100.000,00")
-    private double salarioBruto;
+    @Column(nullable = false, columnDefinition = "DECIMAL(10,2)")
+    private Double salarioBruto;
     
     @Min(value = 0, message = "Número de dependentes não pode ser negativo")
     @Max(value = 20, message = "Número de dependentes não pode exceder 20")
-    private int numeroDependentes;
+    @Column(nullable = false)
+    private Integer numeroDependentes = 0;
     
-    private boolean recebePericulosidade;
+    @Column(nullable = false)
+    private Boolean recebePericulosidade = false;
     
+    @Column(length = 20)
     private String grauInsalubridade;
     
     @PositiveOrZero(message = "Valor do vale transporte não pode ser negativo")
     @DecimalMax(value = "10000.00", message = "Valor do vale transporte não pode exceder R$ 10.000,00")
-    private double valorValeTransporte;
+    @Column(columnDefinition = "DECIMAL(10,2) DEFAULT 0.0")
+    private Double valorValeTransporte = 0.0;
     
     @PositiveOrZero(message = "Valor do vale alimentação não pode ser negativo")
     @DecimalMax(value = "10000.00", message = "Valor do vale alimentação não pode exceder R$ 10.000,00")
-    private double valorValeAlimentacao;
+    @Column(columnDefinition = "DECIMAL(10,2) DEFAULT 0.0")
+    private Double valorValeAlimentacao = 0.0;
     
-    public Funcionario() {
+    @Column(nullable = false, updatable = false)
+    private LocalDateTime dataCriacao;
+    
+    @Column(nullable = false)
+    private LocalDateTime dataAtualizacao;
+    
+    @PrePersist
+    protected void onCreate() {
+        dataCriacao = LocalDateTime.now();
+        dataAtualizacao = LocalDateTime.now();
     }
     
-    public Funcionario(String nome, String cpf, String cargo, double salarioBruto) {
-        this.nome = nome;
-        this.cpf = cpf;
-        this.cargo = cargo;
-        this.salarioBruto = salarioBruto;
-        this.numeroDependentes = 0;
-        this.recebePericulosidade = false;
-        this.grauInsalubridade = "";
-        this.valorValeTransporte = 0.0;
-        this.valorValeAlimentacao = 0.0;
+    @PreUpdate
+    protected void onUpdate() {
+        dataAtualizacao = LocalDateTime.now();
     }
-
+    
+    public FuncionarioEntity() {
+    }
+    
+    // Getters e Setters
     public Long getId() {
         return id;
     }
-
+    
     public void setId(Long id) {
         this.id = id;
     }
-
+    
     public String getNome() {
         return nome;
     }
@@ -103,14 +109,6 @@ public class Funcionario {
     public void setCargo(String cargo) {
         this.cargo = cargo;
     }
-
-    public String getDepartamento() {
-        return departamento;
-    }
-
-    public void setDepartamento(String departamento) {
-        this.departamento = departamento;
-    }
     
     public String getTipo() {
         return tipo;
@@ -120,27 +118,27 @@ public class Funcionario {
         this.tipo = tipo;
     }
     
-    public double getSalarioBruto() {
+    public Double getSalarioBruto() {
         return salarioBruto;
     }
     
-    public void setSalarioBruto(double salarioBruto) {
+    public void setSalarioBruto(Double salarioBruto) {
         this.salarioBruto = salarioBruto;
     }
     
-    public int getNumeroDependentes() {
+    public Integer getNumeroDependentes() {
         return numeroDependentes;
     }
     
-    public void setNumeroDependentes(int numeroDependentes) {
+    public void setNumeroDependentes(Integer numeroDependentes) {
         this.numeroDependentes = numeroDependentes;
     }
     
-    public boolean isRecebePericulosidade() {
+    public Boolean getRecebePericulosidade() {
         return recebePericulosidade;
     }
     
-    public void setRecebePericulosidade(boolean recebePericulosidade) {
+    public void setRecebePericulosidade(Boolean recebePericulosidade) {
         this.recebePericulosidade = recebePericulosidade;
     }
     
@@ -152,19 +150,36 @@ public class Funcionario {
         this.grauInsalubridade = grauInsalubridade;
     }
     
-    public double getValorValeTransporte() {
+    public Double getValorValeTransporte() {
         return valorValeTransporte;
     }
     
-    public void setValorValeTransporte(double valorValeTransporte) {
+    public void setValorValeTransporte(Double valorValeTransporte) {
         this.valorValeTransporte = valorValeTransporte;
     }
     
-    public double getValorValeAlimentacao() {
+    public Double getValorValeAlimentacao() {
         return valorValeAlimentacao;
     }
     
-    public void setValorValeAlimentacao(double valorValeAlimentacao) {
+    public void setValorValeAlimentacao(Double valorValeAlimentacao) {
         this.valorValeAlimentacao = valorValeAlimentacao;
     }
+    
+    public LocalDateTime getDataCriacao() {
+        return dataCriacao;
+    }
+    
+    public void setDataCriacao(LocalDateTime dataCriacao) {
+        this.dataCriacao = dataCriacao;
+    }
+    
+    public LocalDateTime getDataAtualizacao() {
+        return dataAtualizacao;
+    }
+    
+    public void setDataAtualizacao(LocalDateTime dataAtualizacao) {
+        this.dataAtualizacao = dataAtualizacao;
+    }
 }
+

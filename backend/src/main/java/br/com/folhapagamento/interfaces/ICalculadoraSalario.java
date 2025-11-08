@@ -1,5 +1,6 @@
 package br.com.folhapagamento.interfaces;
 
-public interface CalculadoraSalario {
+public interface ICalculadoraSalario {
     double calcularSalarioHora(double salarioBruto);
 }
+

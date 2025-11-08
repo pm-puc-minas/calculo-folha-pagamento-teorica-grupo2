@@ -1,0 +1,117 @@
+databaseChangeLog:
+  - changeSet:
+      id: 003-insert-example-data
+      author: sistema
+      comment: Inserção de dados de exemplo para testes
+      changes:
+        - insert:
+            tableName: funcionarios
+            columns:
+              - column:
+                  name: nome
+                  value: João Silva
+              - column:
+                  name: cpf
+                  value: 123.456.789-00
+              - column:
+                  name: cargo
+                  value: Desenvolvedor
+              - column:
+                  name: tipo
+                  value: CLT
+              - column:
+                  name: salario_bruto
+                  valueNumeric: 5000.00
+              - column:
+                  name: numero_dependentes
+                  valueNumeric: 2
+              - column:
+                  name: recebe_periculosidade
+                  valueBoolean: false
+              - column:
+                  name: valor_vale_transporte
+                  valueNumeric: 200.00
+              - column:
+                  name: valor_vale_alimentacao
+                  valueNumeric: 500.00
+              - column:
+                  name: data_criacao
+                  valueComputed: CURRENT_TIMESTAMP
+              - column:
+                  name: data_atualizacao
+                  valueComputed: CURRENT_TIMESTAMP
+        
+        - insert:
+            tableName: funcionarios
+            columns:
+              - column:
+                  name: nome
+                  value: Maria Santos
+              - column:
+                  name: cpf
+                  value: 987.654.321-00
+              - column:
+                  name: cargo
+                  value: Analista
+              - column:
+                  name: tipo
+                  value: CLT
+              - column:
+                  name: salario_bruto
+                  valueNumeric: 6000.00
+              - column:
+                  name: numero_dependentes
+                  valueNumeric: 1
+              - column:
+                  name: recebe_periculosidade
+                  valueBoolean: true
+              - column:
+                  name: valor_vale_transporte
+                  valueNumeric: 250.00
+              - column:
+                  name: valor_vale_alimentacao
+                  valueNumeric: 600.00
+              - column:
+                  name: data_criacao
+                  valueComputed: CURRENT_TIMESTAMP
+              - column:
+                  name: data_atualizacao
+                  valueComputed: CURRENT_TIMESTAMP
+        
+        - insert:
+            tableName: funcionarios
+            columns:
+              - column:
+                  name: nome
+                  value: Pedro Oliveira
+              - column:
+                  name: cpf
+                  value: 111.222.333-44
+              - column:
+                  name: cargo
+                  value: Consultor
+              - column:
+                  name: tipo
+                  value: PJ
+              - column:
+                  name: salario_bruto
+                  valueNumeric: 8000.00
+              - column:
+                  name: numero_dependentes
+                  valueNumeric: 0
+              - column:
+                  name: recebe_periculosidade
+                  valueBoolean: false
+              - column:
+                  name: valor_vale_transporte
+                  valueNumeric: 0.00
+              - column:
+                  name: valor_vale_alimentacao
+                  valueNumeric: 800.00
+              - column:
+                  name: data_criacao
+                  valueComputed: CURRENT_TIMESTAMP
+              - column:
+                  name: data_atualizacao
+                  valueComputed: CURRENT_TIMESTAMP
+

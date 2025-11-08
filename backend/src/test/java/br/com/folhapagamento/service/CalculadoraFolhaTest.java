@@ -1,9 +1,9 @@
 package br.com.folhapagamento.service;
 
-import br.com.folhapagamento.interfaces.CalculadoraSalario;
-import br.com.folhapagamento.interfaces.CalculadoraAdicionais;
-import br.com.folhapagamento.interfaces.CalculadoraBeneficios;
-import br.com.folhapagamento.interfaces.CalculadoraDescontos;
+import br.com.folhapagamento.interfaces.ICalculadoraSalario;
+import br.com.folhapagamento.interfaces.ICalculadoraAdicionais;
+import br.com.folhapagamento.interfaces.ICalculadoraBeneficios;
+import br.com.folhapagamento.interfaces.ICalculadoraDescontos;
 import br.com.folhapagamento.model.FolhaPagamento;
 import br.com.folhapagamento.model.Funcionario;
 import org.junit.jupiter.api.BeforeEach;
@@ -20,16 +20,16 @@ import static org.mockito.Mockito.*;
 class CalculadoraFolhaTest {
     
     @Mock
-    private CalculadoraSalario calculadoraSalario;
+    private ICalculadoraSalario calculadoraSalario;
     
     @Mock
-    private CalculadoraAdicionais calculadoraAdicionais;
+    private ICalculadoraAdicionais calculadoraAdicionais;
     
     @Mock
-    private CalculadoraBeneficios calculadoraBeneficios;
+    private ICalculadoraBeneficios calculadoraBeneficios;
     
     @Mock
-    private CalculadoraDescontos calculadoraDescontos;
+    private ICalculadoraDescontos calculadoraDescontos;
     
     @InjectMocks
     private CalculadoraFolha calculadora;

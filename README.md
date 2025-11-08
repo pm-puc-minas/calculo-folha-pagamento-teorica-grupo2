@@ -4,9 +4,10 @@
 Sistema completo para cálculo de folha de pagamento com **Backend em Spring Boot** e **Frontend em Next.js 15**, totalmente integrados via API REST.
 
 ## 🎯 Objetivo
-Este projeto foi desenvolvido em duas sprints:
+Este projeto foi desenvolvido em três sprints:
 - **Sprint 1**: Análise e Modelagem - Criação da base sólida do sistema
-- **Sprint 2**: Herança, Interfaces, Polimorfismo e Testes Unitários - Aplicação de conceitos OOP 
+- **Sprint 2**: Herança, Interfaces, Polimorfismo e Testes Unitários - Aplicação de conceitos OOP
+- **Sprint 3**: Streams e Persistência - Processamento de dados com Streams e banco de dados PostgreSQL 
 
 ## ✨ Funcionalidades Principais
 
@@ -64,6 +65,55 @@ Este projeto foi desenvolvido em duas sprints:
 - **Testes de Polimorfismo**: Comportamento específico por tipo
 - **Testes de Integração**: Cenários complexos cobertos
 
+## 🗄️ Sprint 3 - Streams e Persistência
+
+### 🌊 **Emprego de Streams para Processamento e Filtragem**
+- **Processamento Eficiente**: Uso de Streams para processar grandes volumes de dados
+- **Filtragem Avançada**: Múltiplos critérios combinados usando Streams
+- **Transformações**: Cálculo de estatísticas usando operações de Stream
+- **Agrupamento**: Agrupamento de dados por critérios específicos
+- **Ordenação**: Ordenação dinâmica por diferentes campos
+- **Métodos Implementados**:
+  - `processarEFiltrar()`: Filtragem com múltiplos critérios
+  - `calcularEstatisticas()`: Estatísticas calculadas com Streams
+  - `agruparPorCargo()` / `agruparPorTipo()`: Agrupamento de dados
+  - `ordenarPorSalario()`: Ordenação por salário
+
+### 💾 **Persistência em Banco de Dados Relacional (PostgreSQL)**
+- **Banco de Dados**: PostgreSQL configurado na porta 5433
+- **Liquibase**: Gerenciamento de migrações com versionamento
+- **JPA/Hibernate**: Mapeamento objeto-relacional completo
+- **Entidades JPA**: 
+  - `FuncionarioEntity`: Entidade para funcionários
+  - `FolhaPagamentoEntity`: Entidade para folhas de pagamento
+- **Repositórios**: 
+  - `FuncionarioRepository`: Repositório com métodos customizados e Streams
+  - `FolhaPagamentoRepository`: Repositório com consultas otimizadas
+- **CRUD Completo**: Endpoints para criar, ler, atualizar e deletar
+- **Relacionamentos**: Foreign keys e cascade configurados
+- **Índices**: Índices criados para melhorar performance
+- **Migrações Automáticas**: Liquibase aplica migrações automaticamente na inicialização
+
+### 🔌 **Endpoints da API**
+- **Funcionários** (`/api/funcionarios`):
+  - `GET /api/funcionarios` - Listar todos
+  - `GET /api/funcionarios/{id}` - Buscar por ID
+  - `POST /api/funcionarios` - Criar funcionário
+  - `PUT /api/funcionarios/{id}` - Atualizar funcionário
+  - `DELETE /api/funcionarios/{id}` - Deletar funcionário
+  - `GET /api/funcionarios/filtro/avancado` - Filtro avançado com Streams
+  - `GET /api/funcionarios/estatisticas` - Estatísticas calculadas
+  - `GET /api/funcionarios/agrupar/cargo` - Agrupar por cargo
+  - `GET /api/funcionarios/ordenar/salario` - Ordenar por salário
+
+- **Folhas de Pagamento** (`/api/folhas`):
+  - `GET /api/folhas` - Listar todas
+  - `GET /api/folhas/{id}` - Buscar por ID
+  - `POST /api/folhas/calcular-e-salvar/{funcionarioId}` - Calcular e salvar
+  - `GET /api/folhas/filtro/avancado` - Filtro avançado com Streams
+  - `GET /api/folhas/estatisticas` - Estatísticas das folhas
+  - `GET /api/folhas/agrupar/funcionario` - Agrupar por funcionário
+
 ## 🚀 Como Executar
 
 ### 📋 Pré-requisitos
@@ -71,12 +121,19 @@ Este projeto foi desenvolvido em duas sprints:
 - **Node.js 18** ou superior
 - **npm** ou **pnpm**
 - **Gradle** (opcional - o projeto inclui wrapper)
+- **PostgreSQL** instalado e rodando na porta 5433
 - **Navegador web** para acessar a interface
 
 ### ⚡ Executar o Sistema Completo
 
 ### Backend (Spring Boot)
 
+**1. Configure o PostgreSQL:**
+- Certifique-se de que o PostgreSQL está rodando na porta 5433
+- Crie o database: `CREATE DATABASE folha_pagamento;`
+- Ajuste as credenciais em `backend/src/main/resources/application.yml` se necessário
+
+**2. Execute a aplicação:**
 ```bash
 cd backend
 .\gradlew.bat bootRun
@@ -85,6 +142,8 @@ cd backend
 Aguarde: `Started FolhaPagamentoApplication in X seconds`
 
 **URL:** http://localhost:8080
+
+**Nota:** As tabelas serão criadas automaticamente pelo Liquibase na primeira execução.
 
 ### Frontend (Next.js)
 
@@ -108,7 +167,8 @@ npm run dev
 | **🔌 Backend API** | http://localhost:8080 | API REST Spring Boot |
 | **📖 Swagger UI** | http://localhost:8080/swagger-ui.html | Documentação interativa da API |
 | **📄 API Docs** | http://localhost:8080/api-docs | Documentação JSON OpenAPI |
-| **🗄️ Console H2** | http://localhost:8080/h2-console | Banco de dados em memória |
+| **💚 Actuator Health** | http://localhost:8080/actuator/health | Status da aplicação e banco |
+| **🗄️ PostgreSQL** | localhost:5433 | Banco de dados relacional |
 
 ---
 
@@ -423,7 +483,10 @@ Invoke-RestMethod -Uri "http://localhost:8080/api/calcular" -Method POST -Conten
 │   │   │   └── 📁 config/
 │   │   │       └── ⚙️ SwaggerConfig.java           # Configuração do Swagger
 │   │   └── 📁 resources/
-│   │       └── 📄 application.properties           # Configurações da aplicação
+│   │       ├── 📄 application.yml                 # Configurações da aplicação
+│   │       └── 📁 db/changelog/                   # Migrações Liquibase
+│   │           ├── 📄 db.changelog-master.yml     # Master changelog
+│   │           └── 📁 changes/                    # Changesets individuais
 │   └── 📁 test/java/br/com/folhapagamento/
 │       ├── 🧪 FolhaPagamentoApplicationTests.java  # Teste da aplicação
 │       ├── 📁 service/
@@ -474,7 +537,7 @@ Invoke-RestMethod -Uri "http://localhost:8080/api/calcular" -Method POST -Conten
 | **Service** | Implementações concretas | `Calculadora*Impl.java` | SRP, LSP |
 | **Model** | Representação dos dados | `Funcionario.java`, `FolhaPagamento.java` | SRP |
 | **Enums** | Valores constantes | `GrauInsalubridade.java` | OCP |
-| **Config** | Configurações | `SwaggerConfig.java`, `application.properties` | SRP |
+| **Config** | Configurações | `SwaggerConfig.java`, `application.yml` | SRP |
 | **Application** | Ponto de entrada | `FolhaPagamentoApplication.java` | SRP |
 
 ## 📊 Regras de Cálculo
@@ -544,7 +607,9 @@ Invoke-RestMethod -Uri "http://localhost:8080/api/calcular" -Method POST -Conten
 | **Spring Data JPA** | 3.2.0 | Persistência de dados |
 | **Spring Validation** | 3.2.0 | Validação de dados |
 | **SpringDoc OpenAPI** | 2.2.0 | Documentação da API (Swagger) |
-| **H2 Database** | 2.2.224 | Banco de dados em memória |
+| **Liquibase** | latest | Gerenciamento de migrações |
+| **PostgreSQL** | latest | Banco de dados relacional |
+| **H2 Database** | 2.2.224 | Banco de dados em memória (testes) |
 | **JUnit 5** | 5.10.0 | Testes unitários |
 | **Mockito** | 5.10.0 | Framework de mocks para testes |
 | **Gradle** | 8.5 | Build automation |
@@ -730,6 +795,7 @@ java -jar build/libs/sistema-folha-pagamento-0.0.1-SNAPSHOT.jar
 | **Tipo** | Full Stack (Frontend + Backend) |
 | **Backend** | Spring Boot 3.2 + Java 17 + Spring Security |
 | **Frontend** | Next.js 15 + React 18 + TypeScript |
+| **Banco de Dados** | PostgreSQL + Liquibase (migrações versionadas) |
 | **Autenticação** | ✅ Login obrigatório com sessão segura |
 | **Arquitetura** | REST API com CORS e proteção de rotas |
 | **Testes** | 94 testes unitários (JUnit + Mockito) |
