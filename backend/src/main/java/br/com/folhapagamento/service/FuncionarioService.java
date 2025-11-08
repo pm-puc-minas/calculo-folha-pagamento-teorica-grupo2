@@ -1,11 +1,13 @@
-package main.java.br.com.folhapagamento.service;
+package br.com.folhapagamento.service;
 
+import br.com.folhapagamento.event.FuncionarioCadastradoEvent;
 import br.com.folhapagamento.model.Funcionario;
 import br.com.folhapagamento.model.entity.FuncionarioEntity;
 import br.com.folhapagamento.repository.FuncionarioRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,11 +24,21 @@ public class FuncionarioService {
     
     @Autowired
     private FuncionarioRepository funcionarioRepository;
+    
+    @Autowired
+    private ApplicationEventPublisher eventPublisher;
    
     public FuncionarioEntity salvar(Funcionario funcionario) {
         FuncionarioEntity entity = converterParaEntity(funcionario);
         FuncionarioEntity saved = funcionarioRepository.save(entity);
         logger.info("Funcionário salvo com sucesso: {}", saved.getNome());
+      
+        FuncionarioCadastradoEvent event = new FuncionarioCadastradoEvent(
+            saved, 
+            "Funcionário cadastrado no sistema"
+        );
+        eventPublisher.publishEvent(event);
+        
         return saved;
     }
     
@@ -49,6 +61,13 @@ public class FuncionarioService {
         atualizarEntity(entity, funcionario);
         FuncionarioEntity updated = funcionarioRepository.save(entity);
         logger.info("Funcionário atualizado com sucesso: {}", updated.getNome());
+      
+        FuncionarioCadastradoEvent event = new FuncionarioCadastradoEvent(
+            updated, 
+            "Dados do funcionário atualizados"
+        );
+        eventPublisher.publishEvent(event);
+        
         return updated;
     }
   

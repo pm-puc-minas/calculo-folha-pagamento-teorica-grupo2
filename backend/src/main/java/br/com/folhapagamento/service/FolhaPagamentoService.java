@@ -1,5 +1,6 @@
 package br.com.folhapagamento.service;
 
+import br.com.folhapagamento.event.FolhaPagamentoGeradaEvent;
 import br.com.folhapagamento.model.FolhaPagamento;
 import br.com.folhapagamento.model.entity.FolhaPagamentoEntity;
 import br.com.folhapagamento.model.entity.FuncionarioEntity;
@@ -8,6 +9,7 @@ import br.com.folhapagamento.repository.FuncionarioRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,6 +33,9 @@ public class FolhaPagamentoService {
     @Autowired
     private CalculadoraFolha calculadoraFolha;
     
+    @Autowired
+    private ApplicationEventPublisher eventPublisher;
+    
     public FolhaPagamentoEntity salvar(FolhaPagamento folha, Long funcionarioId) {
         FuncionarioEntity funcionario = funcionarioRepository.findById(funcionarioId)
             .orElseThrow(() -> new RuntimeException("Funcionário não encontrado com ID: " + funcionarioId));
@@ -38,6 +43,15 @@ public class FolhaPagamentoService {
         FolhaPagamentoEntity entity = converterParaEntity(folha, funcionario);
         FolhaPagamentoEntity saved = folhaPagamentoRepository.save(entity);
         logger.info("Folha de pagamento salva com sucesso para funcionário: {}", funcionario.getNome());
+        
+        // Publicar evento de geração de folha
+        FolhaPagamentoGeradaEvent event = new FolhaPagamentoGeradaEvent(
+            saved,
+            String.format("Folha de pagamento gerada para %s - Salário Líquido: R$ %.2f", 
+                funcionario.getNome(), saved.getSalarioLiquido())
+        );
+        eventPublisher.publishEvent(event);
+        
         return saved;
     }
     
@@ -173,8 +187,11 @@ public class FolhaPagamentoService {
         FuncionarioEntity funcionarioEntity = funcionarioRepository.findById(funcionarioId)
             .orElseThrow(() -> new RuntimeException("Funcionário não encontrado com ID: " + funcionarioId));
         
+        logger.info("Calculando folha de pagamento para funcionário: {}", funcionarioEntity.getNome());
         br.com.folhapagamento.model.Funcionario funcionario = converterEntityParaFuncionario(funcionarioEntity);
         FolhaPagamento folha = calculadoraFolha.calcularFolha(funcionario);
+        
+        // O evento será publicado dentro do método salvar()
         return salvar(folha, funcionarioId);
     }
     

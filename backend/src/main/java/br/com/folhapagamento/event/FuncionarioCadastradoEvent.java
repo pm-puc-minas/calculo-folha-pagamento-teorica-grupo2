@@ -1,8 +1,23 @@
-package main.java.br.com.folhapagamento.event;
+package br.com.folhapagamento.event;
 
-import main.java.br.com.folhapagamento.model.Funcionario;
+import br.com.folhapagamento.model.entity.FuncionarioEntity;
 
-public record FuncionarioCadastradoEvent(
-    Funcionario funcionario
-) {
+
+public class FuncionarioCadastradoEvent {
+    
+    private final FuncionarioEntity funcionario;
+    private final String acaoRealizada;
+    
+    public FuncionarioCadastradoEvent(FuncionarioEntity funcionario, String acaoRealizada) {
+        this.funcionario = funcionario;
+        this.acaoRealizada = acaoRealizada;
+    }
+    
+    public FuncionarioEntity getFuncionario() {
+        return funcionario;
+    }
+    
+    public String getAcaoRealizada() {
+        return acaoRealizada;
+    }
 }

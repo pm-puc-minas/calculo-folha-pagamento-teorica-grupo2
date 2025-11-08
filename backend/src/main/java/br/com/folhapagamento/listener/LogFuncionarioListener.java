@@ -1,11 +1,10 @@
-package main.java.br.com.folhapagamento.listener;
+package br.com.folhapagamento.listener;
 
-import main.java.br.com.folhapagamento.event.FuncionarioCadastradoEvent;
+import br.com.folhapagamento.event.FuncionarioCadastradoEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
-
 @Component
 public class LogFuncionarioListener {
 
@@ -13,12 +12,16 @@ public class LogFuncionarioListener {
 
     @EventListener
     public void aoCadastrarFuncionario(FuncionarioCadastradoEvent event) {
-        
-        logger.info("[LOG DE EVENTO] Novo funcionário cadastrado!");
-        logger.info("ID: {}, Nome: {}, Cargo: {}",
-            event.funcionario().getId(),
-            event.funcionario().getNome(),
-            event.funcionario().getCargo()
-        );
+        logger.info("═══════════════════════════════════════════════════════");
+        logger.info("🎉 [EVENTO] Novo Funcionário Cadastrado!");
+        logger.info("═══════════════════════════════════════════════════════");
+        logger.info("📋 ID: {}", event.getFuncionario().getId());
+        logger.info("👤 Nome: {}", event.getFuncionario().getNome());
+        logger.info("📧 CPF: {}", event.getFuncionario().getCpf());
+        logger.info("💼 Cargo: {}", event.getFuncionario().getCargo());
+        logger.info("📊 Tipo: {}", event.getFuncionario().getTipo());
+        logger.info("💰 Salário: R$ {}", event.getFuncionario().getSalarioBruto());
+        logger.info("⚡ Ação: {}", event.getAcaoRealizada());
+        logger.info("═══════════════════════════════════════════════════════");
     }
 }

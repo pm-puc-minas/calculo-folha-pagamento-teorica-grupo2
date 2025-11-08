@@ -7,7 +7,7 @@ Sistema completo para cálculo de folha de pagamento com **Backend em Spring Boo
 Este projeto foi desenvolvido em três sprints:
 - **Sprint 1**: Análise e Modelagem - Criação da base sólida do sistema
 - **Sprint 2**: Herança, Interfaces, Polimorfismo e Testes Unitários - Aplicação de conceitos OOP
-- **Sprint 3**: Streams e Persistência - Processamento de dados com Streams e banco de dados PostgreSQL 
+- **Sprint 3**: Coleções/Streams, Persistência e Eventos - Processamento de dados, banco PostgreSQL e sistema de eventos 
 
 ## ✨ Funcionalidades Principais
 
@@ -60,9 +60,10 @@ Este projeto foi desenvolvido em três sprints:
 - **Baixo Acoplamento**: Dependências injetadas, não instanciadas
 
 ### 🧪 **Testes Unitários Abrangentes**
-- **94 Testes Implementados**: Cobertura abrangente do sistema
+- **98 Testes Implementados**: Cobertura abrangente do sistema
 - **Testes de Herança**: Classes abstratas testadas
 - **Testes de Polimorfismo**: Comportamento específico por tipo
+- **Testes de Eventos**: 4 classes de teste para sistema de eventos (Sprint 3)
 - **Testes de Integração**: Cenários complexos cobertos
 
 ## 🗄️ Sprint 3 - Streams e Persistência
@@ -81,7 +82,7 @@ Este projeto foi desenvolvido em três sprints:
 
 ### 💾 **Persistência em Banco de Dados Relacional (PostgreSQL)**
 - **Banco de Dados**: PostgreSQL configurado na porta 5433
-- **Liquibase**: Gerenciamento de migrações com versionamento
+- **Liquibase**: Gerenciamento de migrações com versionamento e precondições
 - **JPA/Hibernate**: Mapeamento objeto-relacional completo
 - **Entidades JPA**: 
   - `FuncionarioEntity`: Entidade para funcionários
@@ -93,6 +94,17 @@ Este projeto foi desenvolvido em três sprints:
 - **Relacionamentos**: Foreign keys e cascade configurados
 - **Índices**: Índices criados para melhorar performance
 - **Migrações Automáticas**: Liquibase aplica migrações automaticamente na inicialização
+
+### 📢 **Implementação de Eventos**
+- **Sistema de Eventos**: Implementação completa usando Spring Events
+- **Eventos Implementados**:
+  - `FuncionarioCadastradoEvent`: Disparado ao cadastrar/atualizar funcionário
+  - `FolhaPagamentoGeradaEvent`: Disparado ao gerar folha de pagamento
+- **Listeners**:
+  - `LogFuncionarioListener`: Registra logs detalhados de funcionários
+  - `NotificacaoFolhaListener`: Processa notificações de folha (assíncrono)
+- **Rastreabilidade**: Logs formatados de todas as operações importantes
+- **Extensibilidade**: Arquitetura preparada para novos listeners e integrações
 
 ### 🔌 **Endpoints da API**
 - **Funcionários** (`/api/funcionarios`):
@@ -728,6 +740,10 @@ A API está completamente documentada com Swagger/OpenAPI 3. Acesse:
 - ✅ **FuncionarioCLT** - Testes de herança e polimorfismo (Sprint 2)
 - ✅ **FuncionarioPJ** - Testes de herança e polimorfismo (Sprint 2)
 - ✅ **Polimorfismo** - Testes de processamento específico por tipo (Sprint 2)
+- ✅ **FuncionarioCadastradoEvent** - Testes do evento de cadastro (Sprint 3)
+- ✅ **FolhaPagamentoGeradaEvent** - Testes do evento de folha (Sprint 3)
+- ✅ **LogFuncionarioListener** - Testes do listener de funcionário (Sprint 3)
+- ✅ **NotificacaoFolhaListener** - Testes do listener de folha (Sprint 3)
 - ✅ **GrauInsalubridade** - Testes do enum
 - ✅ **FolhaPagamentoApplication** - Teste de contexto Spring
 - 📊 **Relatórios** - Gerados em `build/reports/tests/`
@@ -747,10 +763,195 @@ class CalculadoraFolhaTest {
         when(calculadoraSalario.calcularSalarioHora(3000.0))
             .thenReturn(15.0);
         
-        // Teste isolado e controlado
+        
     }
 }
 ```
+
+## 📢 Sistema de Eventos (Sprint 3)
+
+### 🎯 Implementação de Eventos
+
+O sistema implementa um robusto mecanismo de eventos para rastreabilidade e extensibilidade, cumprindo os requisitos da Sprint 3.
+
+### 📋 Eventos Implementados
+
+#### 1. **FuncionarioCadastradoEvent**
+**Disparado quando:** Um funcionário é cadastrado ou atualizado no sistema
+
+**Listener:** `LogFuncionarioListener`
+- ✅ Registra logs detalhados sobre o funcionário
+- ✅ Exibe informações formatadas no console
+- ✅ Pronto para extensão (auditoria, email, etc.)
+
+**Quando é disparado:**
+- Ao cadastrar novo funcionário (`FuncionarioService.salvar()`)
+- Ao atualizar funcionário existente (`FuncionarioService.atualizar()`)
+
+**Exemplo de Log:**
+```
+═══════════════════════════════════════════════════════════
+🎉 [EVENTO] Novo Funcionário Cadastrado!
+═══════════════════════════════════════════════════════════
+📋 ID: 1
+👤 Nome: João Silva
+💼 Cargo: Desenvolvedor
+💰 Salário: R$ 5000.00
+⚡ Ação: Funcionário cadastrado no sistema
+═══════════════════════════════════════════════════════════
+```
+
+---
+
+#### 2. **FolhaPagamentoGeradaEvent**
+**Disparado quando:** Uma folha de pagamento é calculada e salva
+
+**Listener:** `NotificacaoFolhaListener` (Assíncrono)
+- ✅ Processa notificações de folha gerada
+- ✅ Execução assíncrona com `@Async`
+- ✅ Pronto para integração com sistemas externos
+- ✅ Logs formatados com informações financeiras
+
+**Quando é disparado:**
+- Ao salvar folha de pagamento (`FolhaPagamentoService.salvar()`)
+- Ao calcular e salvar folha (`FolhaPagamentoService.calcularESalvar()`)
+
+**Exemplo de Log:**
+```
+═══════════════════════════════════════════════════════════
+📊 [EVENTO] Nova Folha de Pagamento Gerada!
+═══════════════════════════════════════════════════════════
+🆔 ID Folha: 10
+👤 Funcionário: João Silva
+💵 Salário Bruto: R$ 5000.00
+💰 Salário Líquido: R$ 4200.00
+📉 Total Descontos: R$ 800.00
+📅 Mês/Ano: 11/2024
+✅ Notificação processada com sucesso!
+═══════════════════════════════════════════════════════════
+```
+
+---
+
+### 🏗️ Arquitetura de Eventos
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                      SERVICE LAYER                          │
+│                                                               │
+│  FuncionarioService          FolhaPagamentoService          │
+│         │                              │                     │
+│         │ publishEvent()               │ publishEvent()      │
+│         └──────────────────────────────┘                     │
+└───────────────────────┬──────────────────────────────────────┘
+                        │
+                        ▼
+┌─────────────────────────────────────────────────────────────┐
+│              ApplicationEventPublisher                       │
+│                   (Spring Framework)                         │
+└───────────────────────┬──────────────────────────────────────┘
+                        │
+                        ▼
+┌─────────────────────────────────────────────────────────────┐
+│                   EVENT LISTENERS                            │
+│                                                               │
+│  ┌──────────────────────┐    ┌───────────────────────┐     │
+│  │ LogFuncionario      │    │ NotificacaoFolha     │     │
+│  │ Listener            │    │ Listener (Async)     │     │
+│  │ @EventListener      │    │ @EventListener        │     │
+│  └──────────────────────┘    └───────────────────────┘     │
+└─────────────────────────────────────────────────────────────┘
+```
+
+### 💻 Exemplos de Uso
+
+#### Cadastrando um Funcionário (Dispara Evento)
+
+```java
+@Autowired
+private FuncionarioService funcionarioService;
+
+Funcionario funcionario = new Funcionario();
+funcionario.setNome("João Silva");
+funcionario.setCargo("Desenvolvedor");
+funcionario.setSalarioBruto(5000.0);
+
+// Ao salvar, o evento é disparado automaticamente
+FuncionarioEntity saved = funcionarioService.salvar(funcionario);
+```
+
+#### Gerando Folha de Pagamento (Dispara Evento)
+
+```java
+@Autowired
+private FolhaPagamentoService folhaService;
+
+// Calcula e salva a folha - dispara evento automaticamente
+FolhaPagamentoEntity folha = folhaService.calcularESalvar(funcionarioId);
+```
+
+### 🧪 Testes de Eventos
+
+O sistema inclui 4 classes de teste para eventos:
+
+- ✅ `FuncionarioCadastradoEventTest` - Valida criação e dados do evento
+- ✅ `FolhaPagamentoGeradaEventTest` - Valida criação e dados do evento
+- ✅ `LogFuncionarioListenerTest` - Valida processamento de eventos de funcionário
+- ✅ `NotificacaoFolhaListenerTest` - Valida processamento de eventos de folha
+
+**Executar testes:**
+```bash
+cd backend
+./gradlew test --tests "*Event*" --tests "*Listener*"
+```
+
+### 🔧 Extensibilidade
+
+**Como adicionar novos Listeners:**
+
+```java
+@Component
+public class EmailNotificationListener {
+    
+    @EventListener
+    public void onFolhaGerada(FolhaPagamentoGeradaEvent event) {
+        // Enviar email para o funcionário
+        emailService.enviarFolha(event.getFolhaPagamento());
+    }
+}
+```
+
+**Listener Assíncrono (não bloqueia execução):**
+
+```java
+@Component
+public class IntegracaoExternaListener {
+    
+    @EventListener
+    @Async
+    public void onFolhaGerada(FolhaPagamentoGeradaEvent event) {
+        // Integração com sistema externo
+        sistemaExterno.enviarDados(event.getFolhaPagamento());
+    }
+}
+```
+
+### 📊 Casos de Uso
+
+1. **Auditoria e Compliance** - Registrar todas as operações importantes
+2. **Notificações** - Email/SMS quando eventos ocorrem
+3. **Integrações** - Sincronizar com sistemas externos
+4. **Business Intelligence** - Coletar métricas e analytics
+
+### 📈 Benefícios
+
+✅ **Desacoplamento** - Services não precisam conhecer os Listeners  
+✅ **Escalabilidade** - Fácil adicionar novos listeners  
+✅ **Testabilidade** - Cada componente testado independentemente  
+✅ **Rastreabilidade** - Logs detalhados de todas as operações  
+✅ **Extensibilidade** - Sistema preparado para futuras integrações  
+
+---
 
 ## 🚀 Deploy e Produção
 
@@ -798,9 +999,11 @@ java -jar build/libs/sistema-folha-pagamento-0.0.1-SNAPSHOT.jar
 | **Banco de Dados** | PostgreSQL + Liquibase (migrações versionadas) |
 | **Autenticação** | ✅ Login obrigatório com sessão segura |
 | **Arquitetura** | REST API com CORS e proteção de rotas |
-| **Testes** | 94 testes unitários (JUnit + Mockito) |
+| **Testes** | 98 testes unitários (JUnit + Mockito) |
 | **Conceitos OOP** | Herança, Polimorfismo, Interfaces, Classes Abstratas |
 | **Princípios** | SOLID |
+| **Streams** | ✅ Processamento, filtragem, estatísticas e agrupamento |
+| **Eventos** | ✅ Sistema completo com listeners síncronos e assíncronos |
 | **Documentação** | Swagger/OpenAPI |
 | **Interface** | Responsiva, moderna, com notificações em tempo real |
 | **Integração** | ✅ 100% funcional |
@@ -812,6 +1015,6 @@ java -jar build/libs/sistema-folha-pagamento-0.0.1-SNAPSHOT.jar
 - **Allan Mateus Arruda De Souza**
 - **Lara Andrade Carvalho**
 
-**Última Atualização:** Outubro/2025  
-**Status:** ✅ Projeto Completo - Frontend + Backend Integrados
+**Última Atualização:** Novembro/2025  
+**Status:** ✅ Projeto Completo - Sprint 3 Finalizada (Streams, Persistência e Eventos)
 
