@@ -1,8 +1,7 @@
-package main.java.br.com.folhapagamento.controller;
+package br.com.folhapagamento.controller;
 
-import br.com.folhapagamento.dto.FuncionarioRequestDTO;
-import br.com.folhapagamento.dto.FuncionarioResponseDTO;
 import br.com.folhapagamento.model.Funcionario;
+import br.com.folhapagamento.model.entity.FuncionarioEntity;
 import br.com.folhapagamento.service.FuncionarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -10,7 +9,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController 
 @RequestMapping("/api/funcionarios") 
@@ -20,22 +18,16 @@ public class FuncionarioController {
     private FuncionarioService service;
 
     @PostMapping 
-    public ResponseEntity<FuncionarioResponseDTO> criar(@RequestBody FuncionarioRequestDTO dto) {
-        Funcionario funcionarioSalvo = service.criarFuncionario(dto);
-        FuncionarioResponseDTO responseDTO = new FuncionarioResponseDTO(funcionarioSalvo);
+    public ResponseEntity<FuncionarioEntity> criar(@RequestBody Funcionario funcionario) {
+        FuncionarioEntity funcionarioSalvo = service.salvar(funcionario);
         
-        URI location = URI.create("/api/funcionarios/" + responseDTO.id());
-        return ResponseEntity.created(location).body(responseDTO);
+        URI location = URI.create("/api/funcionarios/" + funcionarioSalvo.getId());
+        return ResponseEntity.created(location).body(funcionarioSalvo);
     }
 
     @GetMapping 
-    public ResponseEntity<List<FuncionarioResponseDTO>> listar() {
-        List<Funcionario> funcionarios = service.listarTodos();
-        
-        List<FuncionarioResponseDTO> responseList = funcionarios.stream()
-            .map(FuncionarioResponseDTO::new) 
-            .collect(Collectors.toList());
-            
-        return ResponseEntity.ok(responseList);
+    public ResponseEntity<List<FuncionarioEntity>> listar() {
+        List<FuncionarioEntity> funcionarios = service.buscarTodos();
+        return ResponseEntity.ok(funcionarios);
     }
 }
