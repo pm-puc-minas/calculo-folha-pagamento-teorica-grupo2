@@ -1,5 +1,10 @@
 package br.com.folhapagamento.model;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.DecimalMax;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Max;
@@ -10,9 +15,14 @@ import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.constraints.Size;
 
+@Entity
+@Table(name = "tb_funcionarios")
 public class Funcionario {
     
-    //Uso de tratamento de exceções, bom
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    
     @NotBlank(message = "Nome é obrigatório")
     @Size(min = 3, max = 100, message = "Nome deve ter entre 3 e 100 caracteres")
     private String nome;
@@ -22,6 +32,9 @@ public class Funcionario {
     @NotBlank(message = "Cargo é obrigatório")
     @Size(min = 2, max = 50, message = "Cargo deve ter entre 2 e 50 caracteres")
     private String cargo;
+
+    @NotBlank(message = "Departamento é obrigatório")
+    private String departamento;
     
     @NotBlank(message = "Tipo de funcionário é obrigatório")
     private String tipo;
@@ -62,6 +75,15 @@ public class Funcionario {
         this.valorValeTransporte = 0.0;
         this.valorValeAlimentacao = 0.0;
     }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     public String getNome() {
         return nome;
     }
@@ -84,6 +106,14 @@ public class Funcionario {
     
     public void setCargo(String cargo) {
         this.cargo = cargo;
+    }
+
+    public String getDepartamento() {
+        return departamento;
+    }
+
+    public void setDepartamento(String departamento) {
+        this.departamento = departamento;
     }
     
     public String getTipo() {
