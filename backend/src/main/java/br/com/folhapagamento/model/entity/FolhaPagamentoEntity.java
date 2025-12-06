@@ -11,7 +11,7 @@ public class FolhaPagamentoEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "funcionario_id", nullable = false)
     private FuncionarioEntity funcionario;
     
@@ -30,13 +30,13 @@ public class FolhaPagamentoEntity {
     @Column(nullable = false, columnDefinition = "DECIMAL(10,2)")
     private Double valeAlimentacao;
     
-    @Column(nullable = false, columnDefinition = "DECIMAL(10,2)")
+    @Column(name = "desconto_vale_transporte", nullable = false, columnDefinition = "DECIMAL(10,2)")
     private Double descontoValeTransporte;
     
-    @Column(nullable = false, columnDefinition = "DECIMAL(10,2)")
+    @Column(name = "desconto_inss", nullable = false, columnDefinition = "DECIMAL(10,2)")
     private Double descontoINSS;
     
-    @Column(nullable = false, columnDefinition = "DECIMAL(10,2)")
+    @Column(name = "desconto_irrf", nullable = false, columnDefinition = "DECIMAL(10,2)")
     private Double descontoIRRF;
     
     @Column(nullable = false, columnDefinition = "DECIMAL(10,2)")

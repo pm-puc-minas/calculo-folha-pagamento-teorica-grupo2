@@ -33,7 +33,6 @@ public class Funcionario {
     @Size(min = 2, max = 50, message = "Cargo deve ter entre 2 e 50 caracteres")
     private String cargo;
 
-    @NotBlank(message = "Departamento é obrigatório")
     private String departamento;
     
     @NotBlank(message = "Tipo de funcionário é obrigatório")

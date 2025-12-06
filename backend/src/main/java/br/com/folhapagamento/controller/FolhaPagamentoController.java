@@ -41,12 +41,39 @@ public class FolhaPagamentoController {
     @Operation(summary = "Calcular e salvar folha", description = "Calcula e salva a folha de pagamento no banco de dados")
     @ApiResponse(responseCode = "201", description = "Folha calculada e salva com sucesso")
     @ApiResponse(responseCode = "404", description = "Funcionário não encontrado")
-    public ResponseEntity<FolhaPagamentoEntity> calcularESalvar(@PathVariable Long funcionarioId) {
+    @ApiResponse(responseCode = "400", description = "Erro de validação nos dados do funcionário")
+    public ResponseEntity<?> calcularESalvar(@PathVariable Long funcionarioId) {
         try {
             FolhaPagamentoEntity entity = folhaPagamentoServiceEntity.calcularESalvar(funcionarioId);
             return ResponseEntity.status(HttpStatus.CREATED).body(entity);
+        } catch (br.com.folhapagamento.exception.FuncionarioInvalidoException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(Map.of(
+                    "timestamp", java.time.LocalDateTime.now().toString(),
+                    "status", 400,
+                    "error", "Erro de Validação",
+                    "message", e.getMessage(),
+                    "path", "/api/folhas/calcular-e-salvar/" + funcionarioId
+                ));
         } catch (RuntimeException e) {
-            return ResponseEntity.notFound().build();
+            if (e.getMessage() != null && e.getMessage().contains("não encontrado")) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(Map.of(
+                        "timestamp", java.time.LocalDateTime.now().toString(),
+                        "status", 404,
+                        "error", "Não Encontrado",
+                        "message", e.getMessage(),
+                        "path", "/api/folhas/calcular-e-salvar/" + funcionarioId
+                    ));
+            }
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(Map.of(
+                    "timestamp", java.time.LocalDateTime.now().toString(),
+                    "status", 500,
+                    "error", "Erro Interno",
+                    "message", e.getMessage(),
+                    "path", "/api/folhas/calcular-e-salvar/" + funcionarioId
+                ));
         }
     }
     

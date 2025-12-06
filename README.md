@@ -4,10 +4,11 @@
 Sistema completo para cálculo de folha de pagamento com **Backend em Spring Boot** e **Frontend em Next.js 15**, totalmente integrados via API REST.
 
 ## 🎯 Objetivo
-Este projeto foi desenvolvido em três sprints:
+Este projeto foi desenvolvido em quatro sprints:
 - **Sprint 1**: Análise e Modelagem - Criação da base sólida do sistema
 - **Sprint 2**: Herança, Interfaces, Polimorfismo e Testes Unitários - Aplicação de conceitos OOP
-- **Sprint 3**: Coleções/Streams, Persistência e Eventos - Processamento de dados, banco PostgreSQL e sistema de eventos 
+- **Sprint 3**: Coleções/Streams, Persistência e Eventos - Processamento de dados, banco PostgreSQL e sistema de eventos
+- **Sprint 4**: Frontend Web, Integração e Padrões de Projeto - Interface completa, CRUD e Design Patterns 
 
 ## ✨ Funcionalidades Principais
 
@@ -65,6 +66,49 @@ Este projeto foi desenvolvido em três sprints:
 - **Testes de Polimorfismo**: Comportamento específico por tipo
 - **Testes de Eventos**: 4 classes de teste para sistema de eventos (Sprint 3)
 - **Testes de Integração**: Cenários complexos cobertos
+
+## 🎨 Sprint 4 - Frontend Web, Integração e Padrões de Projeto
+
+### 🖥️ **Frontend Web Completo**
+- **Dashboard**: Estatísticas, ações rápidas e folhas recentes
+- **Gestão de Funcionários**: CRUD completo com listagem, cadastro, edição e exclusão
+- **Folhas de Pagamento**: Listagem, filtros por período e detalhes completos
+- **Navegação**: Menu responsivo com indicador de página ativa
+- **Validação**: Formulários com validação em tempo real
+- **Feedback**: Toasts de sucesso/erro em todas as operações
+
+### 🔗 **Integração Frontend-Backend**
+- **API Client**: Módulo TypeScript com todas as funções de integração
+- **Tratamento de Erros**: Classes de erro customizadas (APIError)
+- **Loading States**: Indicadores visuais durante operações assíncronas
+- **Autenticação**: Contexto de auth com proteção de rotas
+
+### 🏭 **Padrões de Projeto Implementados**
+
+#### Factory Pattern
+- **FuncionarioFactory**: Interface para criação de funcionários
+- **FuncionarioFactoryImpl**: Implementação que cria FuncionarioCLT ou FuncionarioPJ
+- **Benefício**: Encapsula lógica de criação, facilita extensão
+
+#### Strategy Pattern (já existente, documentado)
+- **ICalculadoraSalario** → CalculadoraSalarioImpl
+- **ICalculadoraAdicionais** → CalculadoraAdicionaisImpl
+- **ICalculadoraBeneficios** → CalculadoraBeneficiosImpl
+- **ICalculadoraDescontos** → CalculadoraDescontosImpl
+- **Benefício**: Algoritmos intercambiáveis, baixo acoplamento
+
+### 📱 **Páginas Implementadas**
+
+| Rota | Descrição |
+|------|-----------|
+| `/dashboard` | Dashboard com estatísticas e ações rápidas |
+| `/funcionarios` | Listagem de funcionários com filtros |
+| `/funcionarios/novo` | Cadastro de novo funcionário |
+| `/funcionarios/[id]/editar` | Edição de funcionário existente |
+| `/folhas` | Listagem de folhas com filtros por período |
+| `/folhas/[id]` | Detalhes completos da folha de pagamento |
+
+---
 
 ## 🗄️ Sprint 3 - Streams e Persistência
 
@@ -173,8 +217,11 @@ npm run dev
 
 | Serviço | URL | Descrição |
 |---------|-----|-----------|
-| **Login** | http://localhost:3001/login | Tela de login do sistema |
-| **Dashboard** | http://localhost:3001/dashboard | Sistema de folha (requer login) |
+| **🔐 Login** | http://localhost:3001/login | Tela de login do sistema |
+| **📊 Dashboard** | http://localhost:3001/dashboard | Dashboard com estatísticas |
+| **👥 Funcionários** | http://localhost:3001/funcionarios | Gestão de funcionários |
+| **📝 Novo Funcionário** | http://localhost:3001/funcionarios/novo | Cadastro de funcionário |
+| **📋 Folhas** | http://localhost:3001/folhas | Listagem de folhas |
 | **🎨 Frontend** | http://localhost:3001 | Interface web interativa |
 | **🔌 Backend API** | http://localhost:8080 | API REST Spring Boot |
 | **📖 Swagger UI** | http://localhost:8080/swagger-ui.html | Documentação interativa da API |
@@ -492,6 +539,9 @@ Invoke-RestMethod -Uri "http://localhost:8080/api/calcular" -Method POST -Conten
 │   │   │   │   └── 📊 FolhaPagamento.java          # Modelo da folha
 │   │   │   ├── 📁 enums/
 │   │   │   │   └── 🔢 GrauInsalubridade.java       # Enum para graus de insalubridade
+│   │   │   ├── 📁 factory/                        # Padrões de Projeto (Sprint 4)
+│   │   │   │   ├── 🏭 FuncionarioFactory.java     # Interface Factory
+│   │   │   │   └── 🏭 FuncionarioFactoryImpl.java # Implementação Factory
 │   │   │   └── 📁 config/
 │   │   │       └── ⚙️ SwaggerConfig.java           # Configuração do Swagger
 │   │   └── 📁 resources/
@@ -521,23 +571,38 @@ Invoke-RestMethod -Uri "http://localhost:8080/api/calcular" -Method POST -Conten
 │   ├── 📄 next.config.mjs               # Configuração do Next.js
 │   ├── 📁 app/                          # App Router do Next.js 15
 │   │   ├── 📄 layout.tsx                # Layout principal da aplicação
-│   │   ├── 📄 page.tsx                  # Página inicial (Calculadora)
-│   │   └── 📄 globals.css               # Estilos globais
+│   │   ├── 📄 page.tsx                  # Página inicial
+│   │   ├── 📄 globals.css               # Estilos globais
+│   │   ├── 📁 login/                    # Página de login
+│   │   │   └── 📄 page.tsx
+│   │   ├── 📁 dashboard/                # Dashboard com estatísticas (Sprint 4)
+│   │   │   └── 📄 page.tsx
+│   │   ├── 📁 funcionarios/             # CRUD de Funcionários (Sprint 4)
+│   │   │   ├── 📄 page.tsx              # Listagem
+│   │   │   ├── 📁 novo/
+│   │   │   │   └── 📄 page.tsx          # Cadastro
+│   │   │   └── 📁 [id]/
+│   │   │       └── 📁 editar/
+│   │   │           └── 📄 page.tsx      # Edição
+│   │   └── 📁 folhas/                   # Folhas de Pagamento (Sprint 4)
+│   │       ├── 📄 page.tsx              # Listagem
+│   │       └── 📁 [id]/
+│   │           └── 📄 page.tsx          # Detalhes
 │   ├── 📁 components/                   # Componentes React
-│   │   ├── 🎨 payroll-calculator.tsx    # Calculadora de folha (integrado)
-│   │   ├── 🎨 payroll-dashboard.tsx     # Dashboard (backup)
-│   │   ├── 🎨 employee-table.tsx        # Tabela de funcionários
-│   │   ├── 🎨 payroll-chart.tsx         # Gráfico de evolução
+│   │   ├── 🎨 header.tsx                # Navegação com menu (Sprint 4)
+│   │   ├── 🎨 payroll-calculator.tsx    # Calculadora de folha
+│   │   ├── 🎨 funcionario-form.tsx      # Formulário de funcionário (Sprint 4)
 │   │   └── 📁 ui/                       # Componentes de UI (shadcn/ui)
-│   │       ├── button.tsx, card.tsx, input.tsx
-│   │       ├── select.tsx, checkbox.tsx, label.tsx
-│   │       ├── badge.tsx, toast.tsx, sonner.tsx
 │   │       └── ... (30+ componentes UI)
+│   ├── 📁 contexts/                     # Contextos React
+│   │   └── 🔐 AuthContext.tsx           # Contexto de autenticação
 │   ├── 📁 lib/                          # Utilitários e configurações
-│   │   ├── 🔌 api.ts                    # Cliente da API (integração)
+│   │   ├── 🔌 api.ts                    # Cliente da API completo (Sprint 4)
 │   │   └── 🛠️ utils.ts                  # Funções utilitárias
 │   └── 📁 public/                       # Arquivos estáticos
 │       └── *.svg, *.png                 # Imagens e ícones
+├── 📁 backend/docs/                     # Documentação (Sprint 4)
+│   └── 📄 DESIGN_PATTERNS.md            # Padrões de projeto documentados
 ```
 
 ### 🏗️ Arquitetura SOLID do Sistema
@@ -953,6 +1018,63 @@ public class IntegracaoExternaListener {
 
 ---
 
+## 🏭 Padrões de Projeto (Sprint 4)
+
+### Factory Pattern
+
+O padrão Factory encapsula a lógica de criação de objetos:
+
+```java
+// Interface define o contrato
+public interface FuncionarioFactory {
+    FuncionarioBase criarFuncionario(String tipo, Funcionario funcionario);
+}
+
+// Implementação contém a lógica
+@Component
+public class FuncionarioFactoryImpl implements FuncionarioFactory {
+    @Override
+    public FuncionarioBase criarFuncionario(String tipo, Funcionario funcionario) {
+        return switch (tipo.toUpperCase()) {
+            case "CLT" -> criarFuncionarioCLT(funcionario);
+            case "PJ" -> criarFuncionarioPJ(funcionario);
+            default -> throw new IllegalArgumentException("Tipo inválido");
+        };
+    }
+}
+```
+
+### Strategy Pattern
+
+O padrão Strategy permite trocar algoritmos de cálculo:
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                    CalculadoraFolha (Context)                    │
+│              Usa as strategies via injeção de dependência        │
+└──────────────────────────────────────────────────────────────────┘
+                               │
+        ┌──────────────────────┼──────────────────────┐
+        │                      │                      │
+        ▼                      ▼                      ▼
+┌───────────────┐    ┌───────────────┐    ┌───────────────┐
+│ICalculadora   │    │ICalculadora   │    │ICalculadora   │
+│   Salario     │    │  Adicionais   │    │  Descontos    │
+└───────────────┘    └───────────────┘    └───────────────┘
+        │                      │                      │
+        ▼                      ▼                      ▼
+┌───────────────┐    ┌───────────────┐    ┌───────────────┐
+│ Calculadora   │    │ Calculadora   │    │ Calculadora   │
+│ SalarioImpl   │    │AdicionaisImpl │    │DescontosImpl  │
+└───────────────┘    └───────────────┘    └───────────────┘
+```
+
+### Documentação Completa
+
+Consulte `backend/docs/DESIGN_PATTERNS.md` para documentação detalhada de todos os padrões implementados.
+
+---
+
 ## 🚀 Deploy e Produção
 
 ### Build para Produção
@@ -1002,10 +1124,11 @@ java -jar build/libs/sistema-folha-pagamento-0.0.1-SNAPSHOT.jar
 | **Testes** | 98 testes unitários (JUnit + Mockito) |
 | **Conceitos OOP** | Herança, Polimorfismo, Interfaces, Classes Abstratas |
 | **Princípios** | SOLID |
+| **Padrões de Projeto** | ✅ Factory, Strategy, Observer, Template Method |
 | **Streams** | ✅ Processamento, filtragem, estatísticas e agrupamento |
 | **Eventos** | ✅ Sistema completo com listeners síncronos e assíncronos |
-| **Documentação** | Swagger/OpenAPI |
-| **Interface** | Responsiva, moderna, com notificações em tempo real |
+| **Documentação** | Swagger/OpenAPI + Design Patterns |
+| **Interface** | ✅ CRUD completo, responsiva, com notificações |
 | **Integração** | ✅ 100% funcional |
 
 ---
@@ -1015,6 +1138,6 @@ java -jar build/libs/sistema-folha-pagamento-0.0.1-SNAPSHOT.jar
 - **Allan Mateus Arruda De Souza**
 - **Lara Andrade Carvalho**
 
-**Última Atualização:** Novembro/2025  
-**Status:** ✅ Projeto Completo - Sprint 3 Finalizada (Streams, Persistência e Eventos)
+**Última Atualização:** Dezembro/2025  
+**Status:** ✅ Projeto Completo - Sprint 4 Finalizada (Frontend Web, Integração e Padrões de Projeto)
 

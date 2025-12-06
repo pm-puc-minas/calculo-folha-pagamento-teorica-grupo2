@@ -1,4 +1,4 @@
-package test.java.br.com.folhapagamento.service;
+package br.com.folhapagamento.service;
 
 import br.com.folhapagamento.model.Funcionario;
 import br.com.folhapagamento.model.entity.FuncionarioEntity;
