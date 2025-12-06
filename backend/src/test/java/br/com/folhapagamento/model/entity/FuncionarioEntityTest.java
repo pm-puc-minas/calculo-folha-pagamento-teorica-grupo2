@@ -62,8 +62,8 @@ class FuncionarioEntityTest {
 
         assertEquals("Maria Santos", funcionario.getNome());
         assertNull(funcionario.getId());
-        assertNull(funcionario.getNumeroDependentes());
-        assertNull(funcionario.getRecebePericulosidade());
+        assertEquals(0, funcionario.getNumeroDependentes());
+        assertFalse(funcionario.getRecebePericulosidade());
         assertNull(funcionario.getGrauInsalubridade());
     }
 

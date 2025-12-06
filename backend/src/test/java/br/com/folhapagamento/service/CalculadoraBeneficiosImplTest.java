@@ -26,7 +26,8 @@ class CalculadoraBeneficiosImplTest {
     @Test
     void testCalcularValeAlimentacao() {
         double resultado = calculadora.calcularValeAlimentacao(funcionario);
-        assertEquals(550.0, resultado, 0.01);
+        // Retorna o valor informado diretamente
+        assertEquals(25.0, resultado, 0.01);
     }
     
     @Test

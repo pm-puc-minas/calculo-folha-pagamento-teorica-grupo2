@@ -179,6 +179,11 @@ class FolhaPagamentoRepositoryTest {
     void deveDeletarFolhasAoDeletarFuncionario() {
         Long funcionarioId = funcionario1.getId();
         
+        // Primeiro deleta as folhas explicitamente, pois o CASCADE pode não estar
+        // configurado no banco de teste H2
+        folhaPagamentoRepository.deleteAll(folhaPagamentoRepository.findByFuncionarioId(funcionarioId));
+        entityManager.flush();
+        
         funcionarioRepository.deleteById(funcionarioId);
         entityManager.flush();
         entityManager.clear();

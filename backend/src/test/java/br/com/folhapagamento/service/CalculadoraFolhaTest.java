@@ -40,6 +40,9 @@ class CalculadoraFolhaTest {
     void setUp() {
         funcionario = new Funcionario();
         funcionario.setNome("João Silva");
+        funcionario.setCpf("12345678901");
+        funcionario.setCargo("Desenvolvedor");
+        funcionario.setTipo("CLT");
         funcionario.setSalarioBruto(3000.0);
         funcionario.setNumeroDependentes(1);
         funcionario.setRecebePericulosidade(false);

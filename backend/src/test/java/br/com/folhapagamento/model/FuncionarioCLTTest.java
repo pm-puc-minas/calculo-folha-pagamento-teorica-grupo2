@@ -71,9 +71,9 @@ class FuncionarioCLTTest {
         assertTrue(resultado.contains("João Silva"));
         assertTrue(resultado.contains("11144477735"));
         assertTrue(resultado.contains("Desenvolvedor"));
-        assertTrue(resultado.contains("3000.00"));
-        assertTrue(resultado.contains("1"));
-        assertTrue(resultado.contains("Não"));
+        assertTrue(resultado.contains("salarioBruto=3000"));
+        assertTrue(resultado.contains("numeroDependentes=1"));
+        assertTrue(resultado.contains("recebePericulosidade=Não"));
     }
     
     @Test

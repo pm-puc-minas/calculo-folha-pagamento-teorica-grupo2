@@ -83,10 +83,10 @@ class FuncionarioPJTest {
         assertTrue(resultado.contains("Maria Santos"));
         assertTrue(resultado.contains("11144477735"));
         assertTrue(resultado.contains("Consultora"));
-        assertTrue(resultado.contains("5000.00"));
+        assertTrue(resultado.contains("salarioBruto=5000"));
         assertTrue(resultado.contains("12345678000195"));
-        assertTrue(resultado.contains("5.00%"));
-        assertTrue(resultado.contains("Sim"));
+        assertTrue(resultado.contains("percentualComissao=5"));
+        assertTrue(resultado.contains("recebeValeAlimentacao=Sim"));
     }
     
     @Test

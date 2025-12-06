@@ -10,6 +10,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.ApplicationEventPublisher;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -27,6 +28,9 @@ class FuncionarioServiceTest {
 
     @Mock
     private FuncionarioRepository funcionarioRepository;
+
+    @Mock
+    private ApplicationEventPublisher eventPublisher;
 
     @InjectMocks
     private FuncionarioService funcionarioService;
@@ -153,10 +157,12 @@ class FuncionarioServiceTest {
         when(funcionarioRepository.findAllAsStream())
                 .thenReturn(todosFuncionarios.stream());
 
+        // Filtrar por CLT, salário >= 5000, com dependentes, com periculosidade
         List<FuncionarioEntity> resultado = funcionarioService.processarEFiltrar(
-                "CLT", 5000.0, true, false);
+                "CLT", 5000.0, true, true);
 
         assertNotNull(resultado);
+        // Apenas Maria Santos (CLT, 6000, 1 dependente, periculosidade true)
         assertEquals(1, resultado.size());
         assertEquals("Maria Santos", resultado.get(0).getNome());
         verify(funcionarioRepository, times(1)).findAllAsStream();
