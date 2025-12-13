@@ -8,7 +8,7 @@ spring:
   datasource:
     url: jdbc:postgresql://localhost:5433/folha_pagamento
     username: postgres
-    password: '@procelaA12'
+    password: 'postgres'
     driver-class-name: org.postgresql.Driver
   
   jpa:

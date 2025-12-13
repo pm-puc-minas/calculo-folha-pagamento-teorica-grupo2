@@ -1,1 +1,4 @@
-4.5/5
+5 
+
+Deu trabalho pra setar o ambiente. Precisa ser exatamente Java 17 e Gradle 8.6. Além disso, vocês não disponibilizaram o banco Postgres. Eu subi um banco Postgres em Docker que eu tenho aqui e funcionou.
+Sugiro, pra futuros trabalhos, adotar o uso de Docker para o banco, jvm e gradle pra evitar ter que instalar tudo antes de rodar.
